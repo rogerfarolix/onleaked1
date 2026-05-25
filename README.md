@@ -1,97 +1,58 @@
-# 🔍 Onleaked
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-**Outil gratuit de sensibilisation à l'empreinte numérique email** — like HaveIBeenPwned, made in France.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-[![Laravel](https://img.shields.io/badge/Laravel-13-red.svg)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.3-blue.svg)](https://php.net)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://postgresql.org)
+## About Laravel
 
----
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-## ✨ Fonctionnalités
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-- **Aucune inscription** — entrez votre email, recevez le rapport instantanément
-- **10+ sources OSINT** : Holehe, EmailRep.io, BreachDirectory, Gravatar, DNS/WHOIS
-- **Score de risque** de A (sûr) à F (très exposé)
-- **Cache intelligent** — résultats conservés 6h pour accélérer les analyses répétées
-- **Interface animée** — terminal live pendant l'analyse
-- **100% gratuit, sans pub, sans tracking**
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## 🏗 Stack technique
+## Learning Laravel
 
-```
-Ubuntu 22.04 LTS
-├── Nginx (reverse proxy + SSL Let's Encrypt)
-├── PHP 8.3-FPM
-├── Laravel 13 (framework principal)
-├── PostgreSQL 16 (base de données)
-├── Redis 7 (queue driver + cache)
-├── Supervisor (queue workers)
-└── Python 3 + Holehe (détection comptes)
-```
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-## 🚀 Déploiement rapide
+In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-```bash
-# Cloner le projet
-git clone https://github.com/nealix/onleaked.git /var/www/Projets/nealix/onleaked
+You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
-# Lancer le script de déploiement (root)
-chmod +x deploy.sh && sudo ./deploy.sh
-```
+## Agentic Development
 
-Le script installe et configure automatiquement tout l'environnement.
-
-## ⚙️ Configuration
-
-Après déploiement, éditez `/var/www/Projets/nealix/onleaked/.env` :
-
-```env
-# SMTP (Brevo gratuit : 300 mails/jour)
-MAIL_HOST=smtp-relay.brevo.com
-MAIL_USERNAME=your@email.com
-MAIL_PASSWORD=your_brevo_key
-
-# APIs OSINT (optionnelles mais recommandées)
-EMAILREP_API_KEY=           # emailrep.io — gratuit
-BREACHDIRECTORY_API_KEY=    # RapidAPI free tier
-```
-
-Puis : `php artisan config:cache`
-
-## 📦 Sources OSINT intégrées
-
-| Source | Type | Coût |
-|--------|------|------|
-| Holehe | Détection comptes 250+ sites | Gratuit |
-| EmailRep.io | Réputation, activité suspecte | Gratuit (limité) |
-| BreachDirectory | Fuites mots de passe | RapidAPI free tier |
-| Gravatar | Profil public | Gratuit |
-| DNS/WHOIS | Infrastructure domaine | Gratuit (natif PHP) |
-
-## 🔒 Vie privée & Sécurité
-
-- Emails jamais stockés en clair → hash SHA-256 uniquement
-- Rate limiting : 5 analyses/heure/IP
-- Résultats accessibles uniquement via UUID unique
-- HTTPS enforced, headers de sécurité complets
-
-## 🩺 Diagnostics
+Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
 
 ```bash
-# État des workers
-supervisorctl status
+composer require laravel/boost --dev
 
-# Logs application
-tail -f storage/logs/laravel.log
-
-# Logs workers queue
-tail -f storage/logs/worker.log
-
-# Monitor queue
-php artisan queue:monitor redis:osint
+php artisan boost:install
 ```
 
-## 📄 Licence
+Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
-MIT — Développé par [Nealix](https://nealix.org)
+## Contributing
+
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+
+## Code of Conduct
+
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

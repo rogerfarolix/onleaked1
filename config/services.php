@@ -35,27 +35,4 @@ return [
         ],
     ],
 
-        /*
-    |--------------------------------------------------------------------------
-    | OSINT API Services
-    |--------------------------------------------------------------------------
-    */
-
-    'emailrep' => [
-        'key' => env('EMAILREP_API_KEY'),
-    ],
-
-    'breachdirectory' => [
-        'key' => env('BREACHDIRECTORY_API_KEY'),
-    ],
-
-    'haveibeenpwned' => [
-        'key' => env('HIBP_API_KEY'),
-    ],
-
-    // Alias court utilisé dans HibpService via config('services.hibp.key')
-    'hibp' => [
-        'key' => env('HIBP_API_KEY'),
-    ],
-
 ];

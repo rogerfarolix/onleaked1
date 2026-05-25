@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schedule;
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
 
-// Nettoyage quotidien des scans et caches expirés
-Schedule::command('onleaked:clean')->daily()->at('03:00');
-
-// Nettoyage des jobs échoués en queue (> 7 jours)
-Schedule::command('queue:prune-failed --hours=168')->daily()->at('03:30');
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');
