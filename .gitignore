@@ -25,3 +25,17 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Python Service
+/python_service/venv/
+/python_service/__pycache__/
+*.pyc
+
+# Database
+*.sqlite
+/database/database.sqlite
+/database/database.sqlite-journal
+
+# Testing & Cache
+.env.testing
+/.vite/

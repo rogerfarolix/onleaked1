@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'breachdirectory' => [
+        'api_key' => env('BREACHDIRECTORY_API_KEY'),
+    ],
+
 ];
