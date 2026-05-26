@@ -6,6 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="Onleaked - Cybersecurity SaaS platform. Check if your email has been compromised, track vulnerabilities, and analyze domains.">
     <title>@yield('title', config('app.name', 'Onleaked') . ' - Cybersecurity Intelligence')</title>
+    {{-- Apply saved theme before render to prevent flash --}}
+    <script>if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');</script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800,900&display=swap" rel="stylesheet"/>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -23,79 +25,270 @@
         .fade-up { animation: fadeUp .6s ease-out both; }
         @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         [x-cloak] { display: none !important; }
+
+        /* Light mode */
+        html:not(.dark) body { background: #f8fafc; color: #0f172a; }
+        html:not(.dark) .gradient-bg {
+            background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120,119,198,0.08), transparent), #f8fafc;
+        }
+        html:not(.dark) .glass-card { background: rgba(255,255,255,0.9) !important; border-color: rgba(0,0,0,0.08) !important; color: #0f172a; }
+        html:not(.dark) footer { background: #f1f5f9; border-color: rgba(0,0,0,0.06) !important; }
+        html:not(.dark) .text-white { color: #111827 !important; }
+        html:not(.dark) .text-zinc-400 { color: #4b5563 !important; }
+        html:not(.dark) .text-zinc-500 { color: #6b7280 !important; }
+        html:not(.dark) .text-zinc-300 { color: #374151 !important; }
+        html:not(.dark) input { color: #111827 !important; }
+        html:not(.dark) input::placeholder { color: #9ca3af !important; }
     </style>
     @stack('styles')
 </head>
 <body class="gradient-bg text-white min-h-screen antialiased flex flex-col">
 
-    <!-- Navigation -->
-    <nav x-data="{ open: false }" class="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-rose-500 flex items-center justify-center font-bold text-sm">O</div>
-                <span class="font-bold text-lg tracking-tight">Onleaked</span>
+    @php $currentRoute = Route::currentRouteName(); @endphp
+
+    <!-- Navigation — theme state lives HERE, not on <html> -->
+    <nav x-data="{
+             open: false,
+             scrolled: false,
+             dark: localStorage.getItem('theme') !== 'light',
+             toggle() {
+                 this.dark = !this.dark;
+                 localStorage.setItem('theme', this.dark ? 'dark' : 'light');
+                 document.documentElement.classList.toggle('dark', this.dark);
+             }
+         }"
+         x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 })"
+         :class="scrolled ? 'border-white/10 bg-[#09090b]/95 shadow-xl shadow-black/20' : 'border-transparent bg-[#09090b]/60'"
+         class="fixed top-0 w-full z-50 border-b backdrop-blur-xl transition-all duration-300">
+
+        <div class="max-w-6xl mx-auto px-6 h-[68px] flex items-center justify-between gap-6">
+
+            <!-- Logo -->
+            <a href="{{ route('home') }}" class="flex items-center gap-2.5 shrink-0 group">
+                <div class="w-9 h-9 rounded-xl bg-linear-to-br from-violet-600 to-rose-500 flex items-center justify-center shadow-lg shadow-violet-500/30 group-hover:shadow-violet-500/50 transition-shadow">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+                    </svg>
+                </div>
+                <span class="font-bold text-[17px] tracking-tight">
+                    <span class="text-white">On</span><span class="bg-linear-to-r from-violet-400 to-rose-400 bg-clip-text text-transparent">leaked</span>
+                </span>
             </a>
-            
-            <!-- Desktop Links -->
-            <div class="hidden md:flex items-center gap-8 text-sm text-zinc-400">
-                <a href="/#check" class="hover:text-white transition-colors">Leak Check</a>
-                <a href="{{ route('domain.show') }}" class="hover:text-white transition-colors">Domain Analysis</a>
-                
-                <!-- Services Dropdown -->
-                <div x-data="{ dropdownOpen: false }" class="relative" @click.outside="dropdownOpen = false">
-                    <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-1 hover:text-white transition-colors focus:outline-none">
-                        Services
-                        <svg class="w-4 h-4" :class="{'rotate-180': dropdownOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+
+            <!-- Desktop nav links -->
+            <div class="hidden md:flex items-center gap-1 text-sm">
+
+                <a href="{{ route('home') }}"
+                   class="px-3 py-2 rounded-lg transition-colors {{ $currentRoute === 'home' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    Home
+                </a>
+
+                <!-- Tools dropdown — isolated scope so it doesn't conflict with nav scope -->
+                <div x-data="{ open: false }" class="relative" @click.outside="open = false" @keydown.escape.window="open = false">
+                    <button @click="open = !open"
+                            :class="open ? 'text-white bg-white/5' : ''"
+                            class="flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-150 {{ in_array($currentRoute, ['leak-check','domain.show','services']) ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                        Tools
+                        <svg class="w-3 h-3 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                        </svg>
                     </button>
-                    <div x-show="dropdownOpen" x-transition x-cloak class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 py-2 bg-[#09090b]/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl z-50">
-                        <a href="{{ route('services') }}" class="block px-4 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors">Overview</a>
-                        <a href="{{ route('services') }}#alerts" class="block px-4 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors">Vulnerability Alerts</a>
-                        <a href="{{ route('services') }}#leakcheck" class="block px-4 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors">Leak Check</a>
-                        <a href="{{ route('domain.show') }}" class="block px-4 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 transition-colors">Domain Analysis</a>
+
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 -translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-2"
+                         x-cloak
+                         style="background:#0c0c0f; border:1px solid rgba(255,255,255,0.08);"
+                         class="absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 w-70 rounded-2xl shadow-2xl z-60 overflow-hidden">
+
+                        {{-- Pointer triangle --}}
+                        <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45"
+                             style="background:#0c0c0f; border-top:1px solid rgba(255,255,255,0.08); border-left:1px solid rgba(255,255,255,0.08);"></div>
+
+                        <div class="p-1.5 pt-3">
+                            <p class="px-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Security Tools</p>
+
+                            <a href="{{ route('leak-check') }}"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group {{ $currentRoute === 'leak-check' ? 'bg-white/5' : 'hover:bg-white/5' }}">
+                                <div class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shrink-0 group-hover:bg-rose-500/15 transition-colors">
+                                    <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">Leak Check</div>
+                                    <div class="text-xs text-zinc-600 mt-0.5">Email in 120+ breach databases</div>
+                                </div>
+                                @if($currentRoute === 'leak-check')
+                                    <div class="ml-auto w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0"></div>
+                                @endif
+                            </a>
+
+                            <a href="{{ route('domain.show') }}"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group {{ $currentRoute === 'domain.show' ? 'bg-white/5' : 'hover:bg-white/5' }}">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/15 transition-colors">
+                                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">Domain Analysis</div>
+                                    <div class="text-xs text-zinc-600 mt-0.5">DNS, SPF, DMARC & reputation</div>
+                                </div>
+                                @if($currentRoute === 'domain.show')
+                                    <div class="ml-auto w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></div>
+                                @endif
+                            </a>
+
+                            <a href="{{ route('register') }}"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group hover:bg-white/5">
+                                <div class="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0 group-hover:bg-violet-500/15 transition-colors">
+                                    <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">CVE Alerts</span>
+                                        <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-500/20 text-violet-400 font-semibold leading-none">PRO</span>
+                                    </div>
+                                    <div class="text-xs text-zinc-600 mt-0.5">Real-time vulnerability alerts</div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="mx-3 my-1 border-t border-white/5"></div>
+
+                        <div class="p-1.5">
+                            <a href="{{ route('services') }}"
+                               class="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-zinc-500 hover:text-zinc-200 hover:bg-white/5 transition-all duration-150 group">
+                                <span>All tools overview</span>
+                                <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <a href="{{ route('contact') }}" class="hover:text-white transition-colors">Contact</a>
+                <a href="{{ route('contact') }}"
+                   class="px-3 py-2 rounded-lg transition-colors {{ $currentRoute === 'contact' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    Contact
+                </a>
             </div>
 
-            <!-- Auth / Actions Desktop -->
-            <div class="hidden md:flex items-center gap-3">
+            <!-- Desktop right actions -->
+            <div class="hidden md:flex items-center gap-2 shrink-0">
+                <!-- Theme toggle — uses nav's dark/toggle scope -->
+                <button @click="toggle()" :title="dark ? 'Light mode' : 'Dark mode'"
+                    class="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/5 transition-colors">
+                    <svg x-show="dark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <svg x-show="!dark" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+
+                <div class="w-px h-5 bg-white/10"></div>
+
                 @auth
-                    <a href="{{ route('dashboard') }}" class="text-sm text-zinc-400 hover:text-white transition-colors">Dashboard</a>
+                    <a href="{{ route('dashboard') }}"
+                       class="text-sm px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                        Dashboard
+                    </a>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm text-zinc-400 hover:text-white transition-colors">Log in</a>
-                    <a href="{{ route('register') }}" class="text-sm px-4 py-2 rounded-lg bg-white text-black font-medium hover:bg-zinc-200 transition-colors">Get Started</a>
+                    <a href="{{ route('login') }}" class="text-sm px-3 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors">
+                        Log in
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="text-sm px-4 py-2 rounded-xl bg-linear-to-r from-violet-600 to-violet-500 text-white font-medium hover:from-violet-500 hover:to-violet-400 transition-all shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40">
+                        Get Started
+                    </a>
                 @endauth
             </div>
 
-            <!-- Mobile Hamburger -->
-            <div class="md:hidden flex items-center">
-                <button @click="open = !open" class="text-zinc-400 hover:text-white focus:outline-none p-2">
-                    <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                    <svg x-show="open" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <!-- Mobile: theme + hamburger -->
+            <div class="md:hidden flex items-center gap-1">
+                <button @click="toggle()"
+                    class="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-500 hover:text-white transition-colors">
+                    <svg x-show="dark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <svg x-show="!dark" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+                <button @click="open = !open"
+                    class="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/5 transition-colors">
+                    <svg x-show="!open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="open" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div x-show="open" x-transition x-cloak class="md:hidden bg-[#09090b] border-t border-white/5">
-            <div class="px-6 py-4 flex flex-col gap-4">
-                <a href="/#check" class="text-zinc-400 hover:text-white transition-colors">Leak Check</a>
-                <a href="{{ route('domain.show') }}" class="text-zinc-400 hover:text-white transition-colors">Domain Analysis</a>
-                <a href="{{ route('services') }}" class="text-zinc-400 hover:text-white transition-colors">Services Overview</a>
-                <a href="{{ route('contact') }}" class="text-zinc-400 hover:text-white transition-colors">Contact</a>
-                <hr class="border-white/5">
-                @auth
-                    <a href="{{ route('dashboard') }}" class="text-zinc-400 hover:text-white transition-colors">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="text-zinc-400 hover:text-white transition-colors">Log in</a>
-                    <a href="{{ route('register') }}" class="text-white font-medium">Get Started</a>
-                @endauth
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0 -translate-y-2"
+             x-cloak
+             class="md:hidden border-t border-white/5 bg-[#09090b]/98">
+            <div class="px-4 py-4 space-y-1">
+
+                <p class="px-3 pt-1 pb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Navigation</p>
+
+                <a href="{{ route('home') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors {{ $currentRoute === 'home' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    Home
+                </a>
+                <a href="{{ route('contact') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors {{ $currentRoute === 'contact' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    Contact
+                </a>
+
+                <p class="px-3 pt-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Tools</p>
+
+                <a href="{{ route('leak-check') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors {{ $currentRoute === 'leak-check' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    <span class="w-7 h-7 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </span>
+                    Leak Check
+                </a>
+                <a href="{{ route('domain.show') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors {{ $currentRoute === 'domain.show' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    <span class="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
+                    </span>
+                    Domain Analysis
+                </a>
+                <a href="{{ route('register') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors text-zinc-400 hover:text-white hover:bg-white/5">
+                    <span class="w-7 h-7 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    </span>
+                    CVE Alerts
+                </a>
+
+                <div class="pt-3 pb-1 border-t border-white/5 mt-2">
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition-colors">
+                            Dashboard
+                        </a>
+                    @else
+                        <div class="flex gap-2 px-1 pt-1">
+                            <a href="{{ route('login') }}" class="flex-1 text-center text-sm px-4 py-2.5 rounded-xl border border-white/10 text-zinc-300 hover:bg-white/5 transition-colors">
+                                Log in
+                            </a>
+                            <a href="{{ route('register') }}" class="flex-1 text-center text-sm px-4 py-2.5 rounded-xl bg-linear-to-r from-violet-600 to-violet-500 text-white font-medium hover:from-violet-500 hover:to-violet-400 transition-all">
+                                Get Started
+                            </a>
+                        </div>
+                    @endauth
+                </div>
             </div>
         </div>
     </nav>
 
-    <main class="flex-grow">
+    <main class="grow">
         @yield('content')
     </main>
 
@@ -103,7 +296,7 @@
     <footer class="border-t border-white/5 py-10 px-6">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded-md bg-gradient-to-br from-violet-500 to-rose-500 flex items-center justify-center font-bold text-xs">O</div>
+                <div class="w-6 h-6 rounded-md bg-linear-to-br from-violet-500 to-rose-500 flex items-center justify-center font-bold text-xs">O</div>
                 <span class="text-sm text-zinc-500">&copy; {{ date('Y') }} Onleaked by Nealix. All rights reserved.</span>
             </div>
             <div class="flex items-center gap-6 text-sm text-zinc-500">

@@ -39,4 +39,12 @@ return [
         'api_key' => env('BREACHDIRECTORY_API_KEY'),
     ],
 
+    'virustotal' => [
+        'api_key' => env('VIRUSTOTAL_API_KEY'),
+    ],
+
+    'nvd' => [
+        'api_key' => env('NVD_API_KEY'),
+    ],
+
 ];
