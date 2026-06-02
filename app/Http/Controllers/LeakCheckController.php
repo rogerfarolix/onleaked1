@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\DigitalFootprintJob;
+use App\Models\ScanHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Illuminate\Support\Str;
 
 class LeakCheckController extends Controller
 {
     public function check(Request $request)
     {
-        // Honeypot: bots fill this field, humans don't
         if ($request->filled('website')) {
             return response()->json(['status' => 'error', 'message' => 'Request blocked.'], 422);
         }
@@ -37,22 +38,47 @@ class LeakCheckController extends Controller
         RateLimiter::hit($key, 60);
 
         try {
-            $breaches   = $this->queryXposedOrNot($email);
-            $footprint  = $this->getDigitalFootprint($email);
+            $breaches = $this->queryXposedOrNot($email);
 
-            return response()->json([
-                'status'    => 'success',
-                'found'     => count($breaches) > 0 || count($footprint) > 0,
-                'count'     => count($breaches),
-                'breaches'  => $breaches,
-                'footprint' => $footprint,
-            ]);
+            $jobId = Str::uuid()->toString();
+            Cache::put('footprint:' . $jobId, ['status' => 'pending'], now()->addMinutes(10));
+            DigitalFootprintJob::dispatch($email, $jobId);
+
+            $responseData = [
+                'status'           => 'success',
+                'found'            => count($breaches) > 0,
+                'count'            => count($breaches),
+                'breaches'         => $breaches,
+                'footprint'        => [],
+                'footprint_job_id' => $jobId,
+            ];
+
+            if (auth()->check()) {
+                ScanHistory::create([
+                    'user_id'   => auth()->id(),
+                    'scan_type' => 'leak_check',
+                    'target'    => $email,
+                    'results'   => $responseData,
+                ]);
+            }
+
+            return response()->json($responseData);
         } catch (\Exception) {
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Service temporarily unavailable. Please try again later.',
             ], 503);
         }
+    }
+
+    public function footprintStatus(string $id): \Illuminate\Http\JsonResponse
+    {
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $id)) {
+            return response()->json(['status' => 'error'], 400);
+        }
+
+        $result = Cache::get('footprint:' . $id, ['status' => 'pending']);
+        return response()->json($result);
     }
 
     private function queryXposedOrNot(string $email): array
@@ -96,39 +122,5 @@ class LeakCheckController extends Controller
             }
             return [];
         });
-    }
-
-    private function getDigitalFootprint(string $email): array
-    {
-        $scriptPath  = base_path('python_service/footprint.py');
-        $pythonBin   = base_path('python_service/venv/bin/python');
-
-        if (!file_exists($scriptPath) || !file_exists($pythonBin)) {
-            return [];
-        }
-
-        // Allow enough time for holehe to scan 120+ sites (up to 60s)
-        set_time_limit(90);
-
-        $process = new Process([$pythonBin, $scriptPath, $email]);
-        $process->setTimeout(60);
-
-        try {
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                // stderr captured for debugging — not exposed to user
-                \Illuminate\Support\Facades\Log::debug('footprint.py stderr: ' . $process->getErrorOutput());
-                return [];
-            }
-
-            $decoded = json_decode($process->getOutput(), true);
-            return is_array($decoded) ? $decoded : [];
-
-        } catch (ProcessTimedOutException) {
-            return [];
-        } catch (\Exception) {
-            return [];
-        }
     }
 }

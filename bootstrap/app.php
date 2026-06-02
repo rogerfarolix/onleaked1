@@ -12,12 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
+            \App\Http\Middleware\HandleInertiaRequests::class,
             \App\Http\Middleware\SecurityHeaders::class,
+            \App\Http\Middleware\EnsureNotSuspended::class,
         ]);
 
         $middleware->alias([
             'admin'     => \App\Http\Middleware\AdminMiddleware::class,
             'log.admin' => \App\Http\Middleware\LogAdminAction::class,
+            'api.key'   => \App\Http\Middleware\ApiKeyMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

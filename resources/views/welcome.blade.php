@@ -32,80 +32,118 @@
     </section>
 
     <!-- Stats bar -->
-    <section class="py-10 px-6 border-y border-white/5">
+    <section class="py-10 px-6 border-y border-white/5" id="stats-bar">
         <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-                <p class="text-3xl font-bold text-white">120+</p>
+                <p class="text-3xl font-bold text-white" data-counter="15" data-suffix="B+">0</p>
+                <p class="text-sm text-zinc-500 mt-1">breached records indexed</p>
+            </div>
+            <div>
+                <p class="text-3xl font-bold text-white" data-counter="120" data-suffix="+">0</p>
                 <p class="text-sm text-zinc-500 mt-1">platforms scanned</p>
             </div>
             <div>
+                <p class="text-3xl font-bold text-white" data-counter="6" data-suffix="">0</p>
+                <p class="text-sm text-zinc-500 mt-1">security tools available</p>
+            </div>
+            <div>
                 <p class="text-3xl font-bold text-white">0</p>
-                <p class="text-sm text-zinc-500 mt-1">bytes stored</p>
-            </div>
-            <div>
-                <p class="text-3xl font-bold text-white">Real-time</p>
-                <p class="text-sm text-zinc-500 mt-1">CVE alerts</p>
-            </div>
-            <div>
-                <p class="text-3xl font-bold text-white">Free</p>
-                <p class="text-sm text-zinc-500 mt-1">to use</p>
+                <p class="text-sm text-zinc-500 mt-1">bytes of your data stored</p>
             </div>
         </div>
     </section>
+
+    @push('scripts')
+    <script nonce="{{ $cspNonce }}">
+        (function() {
+            const section = document.getElementById('stats-bar');
+            if (!section) return;
+            const counters = section.querySelectorAll('[data-counter]');
+            let done = false;
+            function animate() {
+                if (done) return; done = true;
+                counters.forEach(el => {
+                    const target = parseInt(el.dataset.counter);
+                    const suffix = el.dataset.suffix || '';
+                    let v = 0;
+                    const step = Math.max(1, Math.ceil(target / 40));
+                    const id = setInterval(() => {
+                        v = Math.min(v + step, target);
+                        el.textContent = v + suffix;
+                        if (v >= target) clearInterval(id);
+                    }, 30);
+                });
+            }
+            const obs = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting) { animate(); obs.disconnect(); }
+            }, { threshold: 0.3 });
+            obs.observe(section);
+        })();
+    </script>
+    @endpush
 
     <!-- Services -->
     <section class="py-24 px-6">
         <div class="max-w-5xl mx-auto">
             <div class="text-center mb-16">
                 <p class="text-sm text-violet-400 font-medium mb-3 uppercase tracking-widest">Services</p>
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Everything you need to stay secure</h2>
-                <p class="text-zinc-400 max-w-xl mx-auto">Three powerful tools, one platform. No account required for the security checks.</p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Six powerful tools, one platform.</h2>
+                <p class="text-zinc-400 max-w-xl mx-auto">No account required for all security checks. Free, instant, privacy-first.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6">
-                <!-- Leak Check -->
                 <a href="{{ route('leak-check') }}" class="glass-card rounded-2xl p-7 hover:border-rose-500/20 transition-all duration-300 group block">
                     <div class="w-12 h-12 rounded-xl bg-rose-500/10 flex items-center justify-center mb-5 group-hover:bg-rose-500/20 transition-colors">
-                        <svg class="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
+                        <svg class="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
                     <h3 class="font-semibold text-lg mb-2">Leak Check & Footprint</h3>
                     <p class="text-zinc-400 text-sm leading-relaxed mb-4">Verify if your email was exposed in a breach and discover your digital footprint across 120+ platforms.</p>
-                    <span class="text-rose-400 text-sm font-medium group-hover:gap-2 flex items-center gap-1 transition-all">
-                        Try it free
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </span>
+                    <span class="text-rose-400 text-sm font-medium group-hover:gap-2 flex items-center gap-1 transition-all">Try it free <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
                 </a>
 
-                <!-- Domain Analysis -->
                 <a href="{{ route('domain.show') }}" class="glass-card rounded-2xl p-7 hover:border-amber-500/20 transition-all duration-300 group block">
                     <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-5 group-hover:bg-amber-500/20 transition-colors">
-                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
-                        </svg>
+                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                     </div>
                     <h3 class="font-semibold text-lg mb-2">Domain Analysis</h3>
-                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">Complete domain intelligence: DNS records, SPF/DMARC audit, subdomain enumeration and reputation check.</p>
-                    <span class="text-amber-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Analyze now
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </span>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">Complete domain intelligence: DNS, SPF/DMARC audit, subdomain enumeration and reputation check.</p>
+                    <span class="text-amber-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Analyze now <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
                 </a>
 
-                <!-- Vulnerability Alerts -->
+                <a href="{{ route('password-check') }}" class="glass-card rounded-2xl p-7 hover:border-cyan-500/20 transition-all duration-300 group block">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-5 group-hover:bg-cyan-500/20 transition-colors">
+                        <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Password Breach Check</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">Check if a password has been exposed using k-anonymity. Your password is never sent in full.</p>
+                    <span class="text-cyan-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Check password <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                </a>
+
+                <a href="{{ route('ssl-check') }}" class="glass-card rounded-2xl p-7 hover:border-sky-500/20 transition-all duration-300 group block">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center mb-5 group-hover:bg-sky-500/20 transition-colors">
+                        <svg class="w-6 h-6 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">SSL Inspector</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">Inspect any domain's certificate — issuer, validity, SANs, days until expiry and security grade.</p>
+                    <span class="text-sky-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Inspect SSL <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                </a>
+
+                <a href="{{ route('ip-check') }}" class="glass-card rounded-2xl p-7 hover:border-indigo-500/20 transition-all duration-300 group block">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-5 group-hover:bg-indigo-500/20 transition-colors">
+                        <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">IP Reputation</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">Geolocation, ISP, ASN lookup and abuse confidence score from global threat intelligence.</p>
+                    <span class="text-indigo-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Check IP <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                </a>
+
                 <a href="{{ route('register') }}" class="glass-card rounded-2xl p-7 hover:border-violet-500/20 transition-all duration-300 group block">
                     <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center mb-5 group-hover:bg-violet-500/20 transition-colors">
-                        <svg class="w-6 h-6 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
+                        <svg class="w-6 h-6 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     </div>
-                    <h3 class="font-semibold text-lg mb-2">Vulnerability Alerts</h3>
-                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">Subscribe to technologies and receive AI-powered email alerts when new CVEs and advisories are published.</p>
-                    <span class="text-violet-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Get started free
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </span>
+                    <h3 class="font-semibold text-lg mb-2">CVE Alerts <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-500/20 text-violet-400 font-semibold align-middle">PRO</span></h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-4">Subscribe to technologies and receive AI-powered email alerts when new CVEs are published.</p>
+                    <span class="text-violet-400 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Get started free <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
                 </a>
             </div>
         </div>
@@ -121,8 +159,8 @@
             <div class="grid md:grid-cols-3 gap-10 text-center">
                 <div class="flex flex-col items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg font-bold text-zinc-300">1</div>
-                    <h3 class="font-semibold">Enter your email or domain</h3>
-                    <p class="text-zinc-500 text-sm">No account required. Your data is never stored or logged.</p>
+                    <h3 class="font-semibold">Enter any target</h3>
+                    <p class="text-zinc-500 text-sm">Email, domain, password, IP address, or raw email headers. No account required.</p>
                 </div>
                 <div class="flex flex-col items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg font-bold text-zinc-300">2</div>

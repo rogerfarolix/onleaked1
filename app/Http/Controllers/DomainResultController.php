@@ -35,10 +35,10 @@ class DomainResultController extends Controller
             return redirect('/')->with('error', 'This shared report has expired.');
         }
 
-        return view('results.domain', [
+        return \Inertia\Inertia::render('Results/Domain', [
             'domain'    => $record->domain,
             'results'   => $record->results,
-            'expiresAt' => $record->expires_at,
+            'expiresAt' => $record->expires_at->toIso8601String(),
         ]);
     }
 }

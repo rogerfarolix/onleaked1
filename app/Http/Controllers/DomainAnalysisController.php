@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Cache;
 
 class DomainAnalysisController extends Controller
 {
-    public function show(): \Illuminate\View\View
+    public function show(): \Inertia\Response
     {
-        return view('domain-analysis');
+        return \Inertia\Inertia::render('DomainAnalysis');
     }
 
     public function analyze(Request $request): \Illuminate\Http\JsonResponse

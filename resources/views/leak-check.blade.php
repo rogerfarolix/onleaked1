@@ -67,25 +67,43 @@
                 <div class="max-w-4xl mx-auto mt-10 fade-up text-left">
 
                     <!-- Security Score Card -->
-                    <div class="glass-card rounded-2xl p-5 mb-6 flex items-center justify-between">
-                        <div>
-                            <p class="text-zinc-400 text-sm mb-1">Security Score</p>
-                            <div class="text-4xl font-bold"
-                                :class="{
-                                    'text-emerald-400': scoreColor() === 'emerald',
-                                    'text-amber-400':   scoreColor() === 'amber',
-                                    'text-red-400':     scoreColor() === 'red'
-                                }">
-                                <span x-text="computeScore()"></span><span class="text-xl text-zinc-500">/100</span>
+                    <div class="glass-card rounded-2xl p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center gap-5">
+                            <!-- SVG Gauge -->
+                            <div class="relative w-20 h-20 shrink-0">
+                                <svg class="w-20 h-20 -rotate-90" viewBox="0 0 72 72">
+                                    <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+                                    <circle cx="36" cy="36" r="30" fill="none" stroke-width="6" stroke-linecap="round"
+                                        :stroke="scoreColor() === 'emerald' ? '#34d399' : (scoreColor() === 'amber' ? '#fbbf24' : '#f87171')"
+                                        :style="'stroke-dasharray: 188.5; stroke-dashoffset: ' + gaugeOffset()">
+                                    </circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                    <span class="text-base font-bold leading-none"
+                                        :class="{'text-emerald-400':scoreColor()==='emerald','text-amber-400':scoreColor()==='amber','text-red-400':scoreColor()==='red'}"
+                                        x-text="computeScore()"></span>
+                                    <span class="text-[9px] text-zinc-500 leading-none mt-0.5">/100</span>
+                                </div>
                             </div>
-                            <p class="text-sm mt-1 text-zinc-500" x-text="scoreLabel()"></p>
+                            <div>
+                                <p class="text-zinc-400 text-sm mb-1">Security Score</p>
+                                <p class="text-sm mt-1 text-zinc-400" x-text="scoreLabel()"></p>
+                            </div>
                         </div>
-                        <button @click="downloadPdf()" :disabled="pdfLoading"
-                            class="px-4 py-2 bg-violet-500 text-white font-semibold rounded-xl hover:bg-violet-400 transition-all text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            <span x-show="!pdfLoading">Download PDF</span>
-                            <span x-show="pdfLoading">Generating…</span>
-                        </button>
+                        <div class="flex gap-2">
+                            <button @click="downloadCsv()" :disabled="csvLoading"
+                                class="px-4 py-2 bg-white/5 border border-white/10 text-zinc-300 font-semibold rounded-xl hover:bg-white/10 transition-all text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                <span x-show="!csvLoading">CSV</span>
+                                <span x-show="csvLoading">...</span>
+                            </button>
+                            <button @click="downloadPdf()" :disabled="pdfLoading"
+                                class="px-4 py-2 bg-violet-500 text-white font-semibold rounded-xl hover:bg-violet-400 transition-all text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                <span x-show="!pdfLoading">Download PDF</span>
+                                <span x-show="pdfLoading">Generating…</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Tabs -->
@@ -175,7 +193,20 @@
 
                     <!-- TAB: Digital Footprint -->
                     <div x-show="tab === 'footprint'" x-cloak>
-                        <template x-if="results.footprint && results.footprint.length > 0">
+                        <!-- Scanning spinner -->
+                        <template x-if="footprintPending">
+                            <div class="flex flex-col items-center gap-4 py-10">
+                                <div class="w-16 h-16 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-violet-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                    </svg>
+                                </div>
+                                <p class="font-semibold text-violet-400">Scanning 120+ platforms…</p>
+                                <p class="text-zinc-500 text-sm">This may take up to 60 seconds. Results will appear automatically.</p>
+                            </div>
+                        </template>
+                        <template x-if="!footprintPending && results.footprint && results.footprint.length > 0">
                             <div>
                                 <div class="flex items-center gap-3 mb-6">
                                     <div class="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
@@ -203,7 +234,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="!results.footprint || results.footprint.length === 0">
+                        <template x-if="!footprintPending && (!results.footprint || results.footprint.length === 0)">
                             <div class="flex flex-col items-center gap-3 py-10">
                                 <div class="w-16 h-16 rounded-full bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center">
                                     <svg class="w-8 h-8 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,18 +254,24 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     function leakChecker() {
         return {
             email: '',
             honeypot: '',
             loading: false,
             pdfLoading: false,
+            csvLoading: false,
             results: null,
             error: null,
             tab: 'breaches',
             breachPage: 1,
             perPage: 8,
+            footprintJobId: null,
+            footprintPollInterval: null,
+            get footprintPending() {
+                return this.footprintJobId !== null && this.results !== null;
+            },
             computeScore() {
                 let score = 100;
                 const b = this.results?.breaches || [];
@@ -242,38 +279,48 @@
                 if (b.some(x => x.password_leaked)) score -= 20;
                 return Math.max(0, score);
             },
+            gaugeOffset() {
+                return 188.5 - (188.5 * this.computeScore() / 100);
+            },
             scoreColor() {
                 const s = this.computeScore();
                 return s >= 80 ? 'emerald' : (s >= 50 ? 'amber' : 'red');
             },
             scoreLabel() {
                 const s = this.computeScore();
-                return s >= 80 ? 'Low Risk' : (s >= 50 ? 'Medium Risk' : 'High Risk');
+                return s >= 80 ? 'Low Risk — No significant threats detected' : (s >= 50 ? 'Medium Risk — Some exposure found' : 'High Risk — Immediate action recommended');
             },
             async downloadPdf() {
                 this.pdfLoading = true;
                 try {
                     const res = await fetch('{{ route("pdf.leak-check") }}', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        },
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
                         body: JSON.stringify({ email: this.email, results: this.results }),
                     });
                     if (!res.ok) throw new Error('Failed');
                     const blob = await res.blob();
                     const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'onleaked-breach-report.pdf';
-                    a.click();
+                    const a = document.createElement('a'); a.href = url; a.download = 'onleaked-breach-report.pdf'; a.click();
                     URL.revokeObjectURL(url);
-                } catch {
-                    this.error = 'Could not generate PDF. Please try again.';
-                } finally {
-                    this.pdfLoading = false;
-                }
+                } catch { this.error = 'Could not generate PDF. Please try again.'; }
+                finally { this.pdfLoading = false; }
+            },
+            async downloadCsv() {
+                this.csvLoading = true;
+                try {
+                    const res = await fetch('{{ route("csv.leak-check") }}', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                        body: JSON.stringify({ email: this.email, results: this.results }),
+                    });
+                    if (!res.ok) throw new Error('Failed');
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a'); a.href = url; a.download = 'onleaked-breach-report.csv'; a.click();
+                    URL.revokeObjectURL(url);
+                } catch { this.error = 'Could not generate CSV. Please try again.'; }
+                finally { this.csvLoading = false; }
             },
             async checkEmail() {
                 this.loading = true;
@@ -281,14 +328,12 @@
                 this.error = null;
                 this.breachPage = 1;
                 this.tab = 'breaches';
+                this.footprintJobId = null;
+                if (this.footprintPollInterval) { clearInterval(this.footprintPollInterval); this.footprintPollInterval = null; }
                 try {
                     const res = await fetch('{{ route("check-email") }}', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' },
                         body: JSON.stringify({ email: this.email, website: this.honeypot }),
                     });
                     const data = await res.json();
@@ -296,12 +341,32 @@
                         this.error = data.message;
                     } else {
                         this.results = data;
+                        if (data.footprint_job_id) {
+                            this.footprintJobId = data.footprint_job_id;
+                            this.pollFootprint(data.footprint_job_id);
+                        }
                     }
-                } catch (e) {
-                    this.error = 'Connection error. Please try again.';
-                } finally {
-                    this.loading = false;
-                }
+                } catch { this.error = 'Connection error. Please try again.'; }
+                finally { this.loading = false; }
+            },
+            pollFootprint(jobId) {
+                this.footprintPollInterval = setInterval(async () => {
+                    try {
+                        const res = await fetch(`/footprint-status/${jobId}`);
+                        const data = await res.json();
+                        if (data.status === 'done') {
+                            clearInterval(this.footprintPollInterval);
+                            this.footprintPollInterval = null;
+                            this.footprintJobId = null;
+                            if (this.results) this.results.footprint = data.data || [];
+                        } else if (data.status === 'error') {
+                            clearInterval(this.footprintPollInterval);
+                            this.footprintPollInterval = null;
+                            this.footprintJobId = null;
+                            if (this.results) this.results.footprint = [];
+                        }
+                    } catch { /* keep polling */ }
+                }, 2000);
             },
             paginatedBreaches() {
                 if (!this.results || !this.results.breaches) return [];

@@ -11,3 +11,4 @@ Artisan::command('inspire', function () {
 // Fetch new CVEs from NIST NVD at 6am, then send alert emails at 7am
 Schedule::command('onleaked:fetch-cves')->dailyAt('06:00');
 Schedule::command('onleaked:send-alerts')->dailyAt('07:00');
+Schedule::command('onleaked:prune-logs')->dailyAt('03:00');

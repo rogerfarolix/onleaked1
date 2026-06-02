@@ -19,6 +19,16 @@
                 </div>
             </div>
 
+            <div class="glass-card p-4 sm:p-8 rounded-2xl shadow-xl">
+                <div class="max-w-xl">
+                    @include('profile.partials.alert-preferences-form')
+                </div>
+            </div>
+
+            <div class="glass-card p-4 sm:p-8 rounded-2xl shadow-xl">
+                @include('profile.partials.api-keys-form')
+            </div>
+
             <div class="glass-card p-4 sm:p-8 rounded-2xl shadow-xl border-red-500/20 bg-red-500/5">
                 <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')

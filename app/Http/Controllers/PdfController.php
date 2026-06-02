@@ -46,4 +46,40 @@ class PdfController extends Controller
 
         return $pdf->download($filename);
     }
+
+    public function passwordCheck(Request $request): \Symfony\Component\HttpFoundation\Response
+    {
+        $request->validate([
+            'count'      => ['required', 'integer', 'min:0'],
+            'risk'       => ['required', 'string', 'in:safe,low,medium,high'],
+            'risk_label' => ['required', 'string', 'max:200'],
+        ]);
+
+        $count      = $request->input('count');
+        $risk       = $request->input('risk');
+        $risk_label = $request->input('risk_label');
+
+        $pdf = Pdf::loadView('pdf.password-check', compact('count', 'risk', 'risk_label'))
+            ->setPaper('a4')
+            ->setOptions(['dpi' => 120, 'isHtml5ParserEnabled' => true]);
+
+        return $pdf->download('onleaked-password-report-' . now()->format('Ymd') . '.pdf');
+    }
+
+    public function sslAnalysis(Request $request): \Symfony\Component\HttpFoundation\Response
+    {
+        $request->validate([
+            'domain'  => ['required', 'string', 'max:253'],
+            'ssl'     => ['required', 'array'],
+        ]);
+
+        $domain = $request->input('domain');
+        $ssl    = $request->input('ssl');
+
+        $pdf = Pdf::loadView('pdf.ssl-check', compact('domain', 'ssl'))
+            ->setPaper('a4')
+            ->setOptions(['dpi' => 120, 'isHtml5ParserEnabled' => true]);
+
+        return $pdf->download('onleaked-ssl-report-' . $domain . '-' . now()->format('Ymd') . '.pdf');
+    }
 }

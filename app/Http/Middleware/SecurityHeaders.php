@@ -10,6 +10,9 @@ class SecurityHeaders
 {
     public function handle(Request $request, Closure $next): Response
     {
+        $nonce = base64_encode(random_bytes(16));
+        $request->attributes->set('csp_nonce', $nonce);
+
         $response = $next($request);
 
         if ($request->isSecure()) {
@@ -24,7 +27,7 @@ class SecurityHeaders
         $response->headers->set(
             'Content-Security-Policy',
             "default-src 'self'; " .
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.bunny.net; " .
+            "script-src 'self' 'nonce-{$nonce}' https://fonts.bunny.net; " .
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net; " .
             "font-src 'self' https://fonts.bunny.net; " .
             "img-src 'self' data: https://www.google.com https://*.xposedornot.com; " .

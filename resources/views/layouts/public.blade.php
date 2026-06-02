@@ -7,7 +7,7 @@
     <meta name="description" content="Onleaked - Cybersecurity SaaS platform. Check if your email has been compromised, track vulnerabilities, and analyze domains.">
     <title>@yield('title', config('app.name', 'Onleaked') . ' - Cybersecurity Intelligence')</title>
     {{-- Apply saved theme before render to prevent flash --}}
-    <script>if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');</script>
+    <script nonce="{{ $cspNonce }}">if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');</script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800,900&display=swap" rel="stylesheet"/>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -87,7 +87,7 @@
                 <div x-data="{ open: false }" class="relative" @click.outside="open = false" @keydown.escape.window="open = false">
                     <button @click="open = !open"
                             :class="open ? 'text-white bg-white/5' : ''"
-                            class="flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-150 {{ in_array($currentRoute, ['leak-check','domain.show','services']) ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                            class="flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-150 {{ in_array($currentRoute, ['leak-check','domain.show','services','password-check','ssl-check','ip-check','header-check']) ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
                         Tools
                         <svg class="w-3 h-3 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
@@ -103,7 +103,7 @@
                          x-transition:leave-end="opacity-0 -translate-y-2"
                          x-cloak
                          style="background:#0c0c0f; border:1px solid rgba(255,255,255,0.08);"
-                         class="absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 w-70 rounded-2xl shadow-2xl z-60 overflow-hidden">
+                         class="absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 w-[300px] rounded-2xl shadow-2xl z-60 overflow-hidden">
 
                         {{-- Pointer triangle --}}
                         <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45"
@@ -151,6 +151,50 @@
                                         <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-500/20 text-violet-400 font-semibold leading-none">PRO</span>
                                     </div>
                                     <div class="text-xs text-zinc-600 mt-0.5">Real-time vulnerability alerts</div>
+                                </div>
+                            </a>
+
+                            <a href="{{ route('password-check') }}"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group {{ $currentRoute === 'password-check' ? 'bg-white/5' : 'hover:bg-white/5' }}">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0 group-hover:bg-cyan-500/15 transition-colors">
+                                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">Password Check</div>
+                                    <div class="text-xs text-zinc-600 mt-0.5">Check password breach count</div>
+                                </div>
+                            </a>
+
+                            <a href="{{ route('ssl-check') }}"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group {{ $currentRoute === 'ssl-check' ? 'bg-white/5' : 'hover:bg-white/5' }}">
+                                <div class="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shrink-0 group-hover:bg-sky-500/15 transition-colors">
+                                    <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">SSL Inspector</div>
+                                    <div class="text-xs text-zinc-600 mt-0.5">Certificate details & grade</div>
+                                </div>
+                            </a>
+
+                            <a href="{{ route('ip-check') }}"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group {{ $currentRoute === 'ip-check' ? 'bg-white/5' : 'hover:bg-white/5' }}">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 group-hover:bg-indigo-500/15 transition-colors">
+                                    <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">IP Reputation</div>
+                                    <div class="text-xs text-zinc-600 mt-0.5">Geolocation & abuse score</div>
+                                </div>
+                            </a>
+
+                            <a href="{{ route('header-check') }}"
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group {{ $currentRoute === 'header-check' ? 'bg-white/5' : 'hover:bg-white/5' }}">
+                                <div class="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/20 flex items-center justify-center shrink-0 group-hover:bg-teal-500/15 transition-colors">
+                                    <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">Header Analyzer</div>
+                                    <div class="text-xs text-zinc-600 mt-0.5">SPF, DKIM, DMARC parsing</div>
                                 </div>
                             </a>
                         </div>
@@ -266,6 +310,30 @@
                         <svg class="w-3.5 h-3.5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     </span>
                     CVE Alerts
+                </a>
+                <a href="{{ route('password-check') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors {{ $currentRoute === 'password-check' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    <span class="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </span>
+                    Password Check
+                </a>
+                <a href="{{ route('ssl-check') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors {{ $currentRoute === 'ssl-check' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    <span class="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </span>
+                    SSL Inspector
+                </a>
+                <a href="{{ route('ip-check') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors {{ $currentRoute === 'ip-check' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    <span class="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
+                    </span>
+                    IP Reputation
+                </a>
+                <a href="{{ route('header-check') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors {{ $currentRoute === 'header-check' ? 'text-white bg-white/5' : 'text-zinc-400 hover:text-white hover:bg-white/5' }}">
+                    <span class="w-7 h-7 rounded-lg bg-teal-500/10 border border-teal-500/20 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </span>
+                    Header Analyzer
                 </a>
 
                 <div class="pt-3 pb-1 border-t border-white/5 mt-2">

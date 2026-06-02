@@ -47,4 +47,8 @@ return [
         'api_key' => env('NVD_API_KEY'),
     ],
 
+    'abuseipdb' => [
+        'api_key' => env('ABUSEIPDB_API_KEY'),
+    ],
+
 ];

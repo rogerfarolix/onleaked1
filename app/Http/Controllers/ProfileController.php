@@ -14,9 +14,9 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+    public function edit(Request $request): \Inertia\Response
     {
-        return view('profile.edit', [
+        return \Inertia\Inertia::render('Profile/Edit', [
             'user' => $request->user(),
         ]);
     }
@@ -35,6 +35,17 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    public function updateAlerts(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'alert_frequency' => ['required', 'string', 'in:instant,daily,weekly,never'],
+        ]);
+
+        $request->user()->update(['alert_frequency' => $request->input('alert_frequency')]);
+
+        return Redirect::route('profile.edit')->with('status', 'alerts-updated');
     }
 
     /**
