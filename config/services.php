@@ -51,4 +51,8 @@ return [
         'api_key' => env('ABUSEIPDB_API_KEY'),
     ],
 
+    'emailrep' => [
+        'api_key' => env('EMAILREP_API_KEY'),
+    ],
+
 ];

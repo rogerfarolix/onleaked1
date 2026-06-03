@@ -48,8 +48,13 @@
           <div class="glass-card rounded-lg p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
             <div>
               <p class="text-text-muted text-sm mb-1">Score de sécurité</p>
-              <div class="text-4xl font-bold font-mono" :class="scoreColor">
-                {{ score }}<span class="text-xl text-text-dim">/100</span>
+              <div class="flex items-center gap-3">
+                <div class="text-4xl font-bold font-mono" :class="scoreColor">
+                  {{ score }}<span class="text-xl text-text-dim">/100</span>
+                </div>
+                <span v-if="results.risk?.label" class="px-2.5 py-1 rounded-full text-xs font-semibold" :class="xonRiskCls(results.risk.label)">
+                  Risque {{ riskLabelFr(results.risk.label) }}
+                </span>
               </div>
               <p class="text-sm mt-1 text-text-dim">{{ scoreLabel }}</p>
             </div>
@@ -81,7 +86,7 @@
               :class="tab === 'footprint' ? 'border-brand-bright text-brand-bright' : 'border-transparent text-text-muted hover:text-white'">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
               Empreinte numérique
-              <span v-if="results.footprint?.length" class="px-1.5 py-0.5 rounded-full bg-brand/20 text-brand-bright text-xs">{{ results.footprint?.length }}</span>
+              <span v-if="footprintAccounts.length" class="px-1.5 py-0.5 rounded-full bg-brand/20 text-brand-bright text-xs">{{ footprintAccounts.length }}</span>
             </button>
           </div>
 
@@ -193,6 +198,24 @@
               <p class="font-semibold text-emerald-400 text-lg">Aucune fuite trouvée</p>
               <p class="text-text-dim text-sm">Votre e-mail n'apparaît dans aucune fuite de données connue.</p>
             </div>
+
+            <!-- Pastes -->
+            <div v-if="results.pastes && results.pastes.count > 0" class="glass-card rounded-lg p-5 mt-4">
+              <div class="flex items-center gap-2 mb-3">
+                <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                <p class="font-semibold text-text">Apparitions sur des sites de paste</p>
+                <span class="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs">{{ results.pastes.count }}</span>
+              </div>
+              <p v-if="!results.pastes.items.length" class="text-text-dim text-sm">
+                Votre e-mail a été retrouvé dans <span class="text-amber-400 font-semibold">{{ results.pastes.count }}</span> collage(s) public(s) de données.
+              </p>
+              <div v-else class="space-y-2">
+                <div v-for="(p, i) in results.pastes.items" :key="i" class="flex items-center justify-between gap-3 bg-surface-2 rounded-md px-3 py-2">
+                  <span class="text-sm text-text font-mono truncate">{{ p.source }}</span>
+                  <span v-if="p.date" class="text-xs text-text-dim shrink-0">{{ formatDate(p.date) }}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Footprint tab -->
@@ -204,61 +227,115 @@
               <p class="font-semibold text-brand-bright">Analyse de 120+ plateformes…</p>
               <p class="text-text-dim text-sm">Les résultats s'afficheront automatiquement, cela peut prendre jusqu'à 60 secondes.</p>
             </div>
-            <div v-else-if="results.footprint?.length">
-              <div class="flex items-center gap-3 mb-5">
-                <div class="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center shrink-0">
-                  <svg class="w-5 h-5 text-brand-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
-                </div>
-                <div>
-                  <p class="font-semibold text-brand-bright">Empreinte numérique</p>
-                  <p class="text-text-dim text-sm">Cet e-mail est enregistré sur <span class="text-brand-bright font-bold">{{ results.footprint.length }}</span> service(s)</p>
-                </div>
-              </div>
+            <div v-else-if="hasFootprint">
 
-              <!-- Summary stats -->
-              <div class="grid grid-cols-3 gap-3 mb-4">
-                <div class="glass-card rounded-lg p-4">
-                  <p class="text-2xl font-bold font-mono text-text">{{ results.footprint.length }}</p>
-                  <p class="text-xs text-text-dim mt-0.5">comptes trouvés</p>
-                </div>
-                <div class="glass-card rounded-lg p-4">
-                  <p class="text-2xl font-bold font-mono text-text">{{ footprintGroups.length }}</p>
-                  <p class="text-xs text-text-dim mt-0.5">catégories</p>
-                </div>
-                <div class="glass-card rounded-lg p-4">
-                  <p class="text-2xl font-bold font-mono text-text">120<span class="text-base text-text-dim">+</span></p>
-                  <p class="text-xs text-text-dim mt-0.5">plateformes vérifiées</p>
-                </div>
-              </div>
-
-              <!-- Grouped by category -->
-              <div class="space-y-5">
-                <div v-for="group in footprintGroups" :key="group.category">
-                  <div class="flex items-center gap-2 mb-2.5">
-                    <p class="mono-label text-text-dim">{{ group.category }}</p>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/5 text-text-dim">{{ group.sites.length }}</span>
-                    <div class="flex-1 h-px bg-line"></div>
+              <!-- Identity profile (Gravatar) -->
+              <div v-if="footprintProfile" class="glass-card rounded-lg p-5 mb-4">
+                <div class="flex items-start gap-4">
+                  <img v-if="footprintProfile.avatar_url" :src="footprintProfile.avatar_url" :alt="footprintProfile.display_name || 'avatar'" class="w-16 h-16 rounded-lg object-cover shrink-0 bg-white/5">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <h3 class="font-semibold text-white text-lg">{{ footprintProfile.display_name || 'Profil public' }}</h3>
+                      <span class="mono-label text-[9px]! px-1.5 py-0.5 rounded bg-brand/15 text-brand-bright">Gravatar</span>
+                    </div>
+                    <p v-if="footprintProfile.job_title || footprintProfile.company" class="text-sm text-text-muted mt-0.5">
+                      {{ [footprintProfile.job_title, footprintProfile.company].filter(Boolean).join(' · ') }}
+                    </p>
+                    <p v-if="footprintProfile.location" class="text-xs text-text-dim mt-1 flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                      {{ footprintProfile.location }}
+                    </p>
+                    <p v-if="footprintProfile.description" class="text-sm text-text-muted mt-2 leading-relaxed">{{ footprintProfile.description }}</p>
+                    <div v-if="footprintProfile.accounts?.length" class="flex flex-wrap gap-2 mt-3">
+                      <a v-for="a in footprintProfile.accounts" :key="a.url" :href="a.url" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-2 border border-line text-xs text-text hover:border-brand/30 hover:text-white transition-colors">
+                        <img v-if="a.icon" :src="a.icon" :alt="a.label" class="w-3.5 h-3.5">
+                        {{ a.label }}
+                      </a>
+                    </div>
                   </div>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                    <a v-for="site in group.sites" :key="site"
-                      :href="`https://${site}`" target="_blank" rel="noopener noreferrer"
-                      class="glass-card rounded-lg p-3.5 flex items-center gap-3 hover:border-brand/30 hover:bg-surface-2 transition-all group">
-                      <img :src="`https://www.google.com/s2/favicons?sz=64&domain=${site}`" :alt="site" class="w-7 h-7 rounded shrink-0 bg-white/5"
-                        @error="$event.target.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23872323\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
-                      <div class="min-w-0 flex-1">
-                        <p class="text-sm text-text truncate font-medium">{{ siteName(site) }}</p>
-                        <p class="text-[11px] text-text-dim truncate font-mono">{{ site }}</p>
-                      </div>
-                      <svg class="w-3.5 h-3.5 text-text-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    </a>
-                  </div>
+                  <a v-if="footprintProfile.profile_url" :href="footprintProfile.profile_url" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-bright hover:text-white shrink-0">Voir →</a>
                 </div>
               </div>
 
-              <p class="text-xs text-text-dim mt-5 flex items-center gap-2">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                L'existence d'un compte signifie qu'un compte associé à cet e-mail a été détecté sur ces plateformes. Pensez à sécuriser ou supprimer ceux que vous n'utilisez plus.
-              </p>
+              <!-- Reputation (EmailRep) -->
+              <div v-if="footprintReputation" class="glass-card rounded-lg p-5 mb-4">
+                <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
+                  <div class="flex items-center gap-2">
+                    <p class="font-semibold text-text">Réputation de l'e-mail</p>
+                    <span class="mono-label text-[9px]! px-1.5 py-0.5 rounded bg-brand/15 text-brand-bright">EmailRep</span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-full text-xs font-semibold" :class="repCls(footprintReputation)">
+                    {{ footprintReputation.suspicious ? 'Suspect' : repFr(footprintReputation.reputation) }}
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <span v-if="footprintReputation.data_breach" class="text-[11px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">Présent dans une fuite</span>
+                  <span v-if="footprintReputation.credentials_leaked" class="text-[11px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">Identifiants divulgués</span>
+                  <span v-if="footprintReputation.malicious_activity" class="text-[11px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">Activité malveillante</span>
+                  <span v-if="footprintReputation.blacklisted" class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Sur liste noire</span>
+                  <span v-if="footprintReputation.references" class="text-[11px] px-2 py-0.5 rounded-full bg-white/5 text-text-dim border border-line">{{ footprintReputation.references }} référence(s)</span>
+                  <span v-if="footprintReputation.first_seen && footprintReputation.first_seen !== 'never'" class="text-[11px] px-2 py-0.5 rounded-full bg-white/5 text-text-dim border border-line">Vu depuis {{ footprintReputation.first_seen }}</span>
+                </div>
+              </div>
+
+              <!-- Accounts -->
+              <template v-if="footprintAccounts.length">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-brand-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-brand-bright">Comptes associés</p>
+                    <p class="text-text-dim text-sm">Cet e-mail est lié à <span class="text-brand-bright font-bold">{{ footprintAccounts.length }}</span> service(s) détecté(s)</p>
+                  </div>
+                </div>
+
+                <!-- Summary stats -->
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                  <div class="glass-card rounded-lg p-4">
+                    <p class="text-2xl font-bold font-mono text-text">{{ footprintAccounts.length }}</p>
+                    <p class="text-xs text-text-dim mt-0.5">comptes détectés</p>
+                  </div>
+                  <div class="glass-card rounded-lg p-4">
+                    <p class="text-2xl font-bold font-mono text-text">{{ footprintGroups.length }}</p>
+                    <p class="text-xs text-text-dim mt-0.5">catégories</p>
+                  </div>
+                  <div class="glass-card rounded-lg p-4">
+                    <p class="text-sm font-medium text-text leading-tight pt-1">{{ (results.footprint.sources || []).join(', ') || '—' }}</p>
+                    <p class="text-xs text-text-dim mt-1">sources OSINT</p>
+                  </div>
+                </div>
+
+                <!-- Grouped by category -->
+                <div class="space-y-5">
+                  <div v-for="group in footprintGroups" :key="group.category">
+                    <div class="flex items-center gap-2 mb-2.5">
+                      <p class="mono-label text-text-dim">{{ group.category }}</p>
+                      <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/5 text-text-dim">{{ group.accounts.length }}</span>
+                      <div class="flex-1 h-px bg-line"></div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                      <a v-for="acc in group.accounts" :key="acc.url"
+                        :href="acc.url" target="_blank" rel="noopener noreferrer"
+                        class="glass-card rounded-lg p-3.5 flex items-center gap-3 hover:border-brand/30 hover:bg-surface-2 transition-all group">
+                        <img :src="`https://www.google.com/s2/favicons?sz=64&domain=${acc.domain || acc.url}`" :alt="acc.name" class="w-7 h-7 rounded shrink-0 bg-white/5"
+                          @error="$event.target.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23872323\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
+                        <div class="min-w-0 flex-1">
+                          <p class="text-sm text-text truncate font-medium">{{ acc.name || siteName(acc.domain) }}</p>
+                          <p class="text-[11px] text-text-dim truncate font-mono">{{ acc.domain }}</p>
+                        </div>
+                        <svg class="w-3.5 h-3.5 text-text-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="text-xs text-text-dim mt-5 flex items-start gap-2">
+                  <svg class="w-3.5 h-3.5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  Un compte détecté signifie qu'un compte associé à cet e-mail (ou au pseudo dérivé) existe sur la plateforme. Les résultats issus du pseudo peuvent contenir quelques faux positifs. Pensez à sécuriser ou supprimer les comptes inutilisés.
+                </p>
+              </template>
             </div>
             <div v-else class="flex flex-col items-center gap-3 py-10">
               <div class="w-16 h-16 rounded-full bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center">
@@ -349,20 +426,46 @@ function categorize(domain) {
   }
   return 'Autres services'
 }
+// Footprint is now an aggregated object { profile, reputation, accounts[], sources[] }
+const footprintProfile    = computed(() => results.value?.footprint?.profile ?? null)
+const footprintReputation = computed(() => results.value?.footprint?.reputation ?? null)
+const footprintAccounts   = computed(() => results.value?.footprint?.accounts ?? [])
+const hasFootprint        = computed(() => !!(footprintProfile.value || footprintReputation.value || footprintAccounts.value.length))
+
 const footprintGroups = computed(() => {
-  const sites = results.value?.footprint ?? []
   const map = {}
-  for (const s of sites) {
-    const c = categorize(s)
-    ;(map[c] ||= []).push(s)
+  for (const acc of footprintAccounts.value) {
+    const c = categorize(acc.domain || acc.url || '')
+    ;(map[c] ||= []).push(acc)
   }
   return Object.entries(map)
-    .map(([category, list]) => ({ category, sites: [...list].sort((a, b) => a.localeCompare(b)) }))
-    .sort((a, b) => b.sites.length - a.sites.length || a.category.localeCompare(b.category))
+    .map(([category, list]) => ({ category, accounts: [...list].sort((a, b) => (a.name || a.domain || '').localeCompare(b.name || b.domain || '')) }))
+    .sort((a, b) => b.accounts.length - a.accounts.length || a.category.localeCompare(b.category))
 })
 function siteName(domain) {
   const base = (domain || '').split('.')[0].replace(/[-_]/g, ' ')
   return base.charAt(0).toUpperCase() + base.slice(1)
+}
+
+// EmailRep reputation display
+function repFr(rep) {
+  return { high: 'Bonne', medium: 'Moyenne', low: 'Faible', none: '—' }[rep] ?? (rep || '—')
+}
+function repCls(r) {
+  if (r.suspicious || r.malicious_activity || r.blacklisted) return 'bg-red-500/20 text-red-400'
+  if (r.reputation === 'high') return 'bg-emerald-500/20 text-emerald-400'
+  if (r.reputation === 'medium') return 'bg-amber-500/20 text-amber-400'
+  return 'bg-white/5 text-text-muted'
+}
+
+// XposedOrNot official risk label
+function riskLabelFr(label) {
+  return { Critical: 'critique', High: 'élevé', Medium: 'moyen', Low: 'faible' }[label] ?? (label || '').toLowerCase()
+}
+function xonRiskCls(label) {
+  if (label === 'Critical' || label === 'High') return 'bg-red-500/20 text-red-400'
+  if (label === 'Medium') return 'bg-amber-500/20 text-amber-400'
+  return 'bg-emerald-500/20 text-emerald-400'
 }
 const scoreColor = computed(() => {
   const s = score.value
@@ -407,7 +510,7 @@ async function pollFootprint() {
     if (data.status === 'done') {
       clearInterval(pollInterval)
       footprintPending.value = false
-      if (results.value) results.value.footprint = data.data ?? []
+      if (results.value) results.value.footprint = data.data ?? null
     } else if (data.status === 'error') {
       clearInterval(pollInterval)
       footprintPending.value = false

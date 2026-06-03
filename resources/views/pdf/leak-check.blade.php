@@ -49,7 +49,9 @@
     @php
         $score = 100;
         $breaches = $results['breaches'] ?? [];
-        $footprint = $results['footprint'] ?? [];
+        $fp = $results['footprint'] ?? [];
+        // Footprint is now an aggregated object { accounts: [...] }; stay backward-compatible with the old flat array.
+        $footprint = is_array($fp) && array_key_exists('accounts', $fp) ? ($fp['accounts'] ?? []) : (is_array($fp) ? $fp : []);
         $score -= min(50, count($breaches) * 15);
         foreach ($breaches as $b) {
             if ($b['password_leaked'] ?? false) { $score -= 20; break; }
@@ -99,7 +101,7 @@
         <div class="section">
             <div class="footprint-grid">
                 @foreach($footprint as $site)
-                    <span class="footprint-item">{{ $site }}</span>
+                    <span class="footprint-item">{{ is_array($site) ? ($site['name'] ?? $site['domain'] ?? '') : $site }}</span>
                 @endforeach
             </div>
         </div>

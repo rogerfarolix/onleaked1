@@ -38,7 +38,8 @@ class LeakCheckController extends Controller
         RateLimiter::hit($key, 60);
 
         try {
-            $breaches = $this->queryXposedOrNot($email);
+            $breaches  = $this->queryXposedOrNot($email);
+            $analytics = $this->breachAnalytics($email);
 
             $jobId = Str::uuid()->toString();
             Cache::put('footprint:' . $jobId, ['status' => 'pending'], now()->addMinutes(10));
@@ -50,7 +51,9 @@ class LeakCheckController extends Controller
                 'count'            => count($breaches),
                 'breaches'         => $breaches,
                 'summary'          => $this->buildSummary($breaches),
-                'footprint'        => [],
+                'risk'             => $analytics['risk'],
+                'pastes'           => $analytics['pastes'],
+                'footprint'        => null,
                 'footprint_job_id' => $jobId,
             ];
 
@@ -150,6 +153,56 @@ class LeakCheckController extends Controller
             'latest'           => $dates->max(),
             'earliest'         => $dates->min(),
         ];
+    }
+
+    /**
+     * Official risk score + paste appearances from XposedOrNot analytics.
+     * Tolerant: any failure yields safe empty defaults.
+     */
+    private function breachAnalytics(string $email): array
+    {
+        $empty = ['risk' => null, 'pastes' => ['count' => 0, 'items' => []]];
+
+        try {
+            $res = Http::timeout(8)->get('https://api.xposedornot.com/v1/breach-analytics', [
+                'email' => $email,
+            ]);
+
+            if (!$res->successful()) {
+                return $empty;
+            }
+
+            $d = $res->json();
+            if (!is_array($d)) {
+                return $empty;
+            }
+
+            $riskRaw = $d['BreachMetrics']['risk'][0] ?? null;
+            $risk = $riskRaw ? [
+                'label' => $riskRaw['risk_label'] ?? null,
+                'score' => $riskRaw['risk_score'] ?? null,
+            ] : null;
+
+            // ExposedPastes shape varies (null / list / {pastes:[...]}). Normalise defensively.
+            $rawPastes = $d['ExposedPastes'] ?? [];
+            if (is_array($rawPastes) && isset($rawPastes['pastes']) && is_array($rawPastes['pastes'])) {
+                $rawPastes = $rawPastes['pastes'];
+            }
+            $items = collect(is_array($rawPastes) ? $rawPastes : [])
+                ->filter(fn ($p) => is_array($p))
+                ->map(fn ($p) => [
+                    'source' => $p['source'] ?? $p['domain'] ?? $p['title'] ?? 'Paste',
+                    'date'   => $p['date'] ?? $p['tmpstmp'] ?? null,
+                ])
+                ->values()
+                ->all();
+
+            $count = (int) ($d['PastesSummary']['cnt'] ?? count($items));
+
+            return ['risk' => $risk, 'pastes' => ['count' => $count, 'items' => $items]];
+        } catch (\Throwable $e) {
+            return $empty;
+        }
     }
 
     private function getAllBreachDetails(): array
