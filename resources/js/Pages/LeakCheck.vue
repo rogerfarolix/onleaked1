@@ -205,8 +205,8 @@
               <p class="text-text-dim text-sm">Les résultats s'afficheront automatiquement, cela peut prendre jusqu'à 60 secondes.</p>
             </div>
             <div v-else-if="results.footprint?.length">
-              <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center shrink-0">
                   <svg class="w-5 h-5 text-brand-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
                 </div>
                 <div>
@@ -214,14 +214,51 @@
                   <p class="text-text-dim text-sm">Cet e-mail est enregistré sur <span class="text-brand-bright font-bold">{{ results.footprint.length }}</span> service(s)</p>
                 </div>
               </div>
-              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                <div v-for="(site, i) in results.footprint" :key="i"
-                  class="glass-card rounded-lg p-4 flex items-center gap-3 hover:border-brand/20 transition-all">
-                  <img :src="`https://www.google.com/s2/favicons?sz=32&domain=${site}`" :alt="site" class="w-6 h-6 rounded shrink-0"
-                    @error="$event.target.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23872323\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
-                  <span class="text-sm text-text truncate">{{ site }}</span>
+
+              <!-- Summary stats -->
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="glass-card rounded-lg p-4">
+                  <p class="text-2xl font-bold font-mono text-text">{{ results.footprint.length }}</p>
+                  <p class="text-xs text-text-dim mt-0.5">comptes trouvés</p>
+                </div>
+                <div class="glass-card rounded-lg p-4">
+                  <p class="text-2xl font-bold font-mono text-text">{{ footprintGroups.length }}</p>
+                  <p class="text-xs text-text-dim mt-0.5">catégories</p>
+                </div>
+                <div class="glass-card rounded-lg p-4">
+                  <p class="text-2xl font-bold font-mono text-text">120<span class="text-base text-text-dim">+</span></p>
+                  <p class="text-xs text-text-dim mt-0.5">plateformes vérifiées</p>
                 </div>
               </div>
+
+              <!-- Grouped by category -->
+              <div class="space-y-5">
+                <div v-for="group in footprintGroups" :key="group.category">
+                  <div class="flex items-center gap-2 mb-2.5">
+                    <p class="mono-label text-text-dim">{{ group.category }}</p>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/5 text-text-dim">{{ group.sites.length }}</span>
+                    <div class="flex-1 h-px bg-line"></div>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                    <a v-for="site in group.sites" :key="site"
+                      :href="`https://${site}`" target="_blank" rel="noopener noreferrer"
+                      class="glass-card rounded-lg p-3.5 flex items-center gap-3 hover:border-brand/30 hover:bg-surface-2 transition-all group">
+                      <img :src="`https://www.google.com/s2/favicons?sz=64&domain=${site}`" :alt="site" class="w-7 h-7 rounded shrink-0 bg-white/5"
+                        @error="$event.target.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23872323\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
+                      <div class="min-w-0 flex-1">
+                        <p class="text-sm text-text truncate font-medium">{{ siteName(site) }}</p>
+                        <p class="text-[11px] text-text-dim truncate font-mono">{{ site }}</p>
+                      </div>
+                      <svg class="w-3.5 h-3.5 text-text-dim opacity-0 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <p class="text-xs text-text-dim mt-5 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                L'existence d'un compte signifie qu'un compte associé à cet e-mail a été détecté sur ces plateformes. Pensez à sécuriser ou supprimer ceux que vous n'utilisez plus.
+              </p>
             </div>
             <div v-else class="flex flex-col items-center gap-3 py-10">
               <div class="w-16 h-16 rounded-full bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center">
@@ -290,6 +327,42 @@ function pwRisk(risk) {
 function isSensitiveData(d) {
   const s = (d || '').toLowerCase()
   return /password|mot de passe|credit|bancaire|bank|carte|cvv|social security|sécurité sociale|passport|passeport|biometr|biométr|token|jeton|private message|message privé|health|santé|pin/.test(s)
+}
+
+// --- Digital footprint: categorisation of detected services ---
+const FOOTPRINT_CATEGORIES = [
+  ['Réseaux sociaux',       ['twitter', 'x.com', 'instagram', 'facebook', 'snapchat', 'pinterest', 'tiktok', 'vk.com', 'tumblr', 'flickr', 'badoo', 'mastodon', 'threads', 'bluesky', 'myspace', 'foursquare', 'nextdoor', 'weibo']],
+  ['Messagerie & forums',   ['discord', 'telegram', 'reddit', 'quora', 'disqus', 'stackoverflow', 'stackexchange', 'slack', 'line.me', 'viber', 'wechat', 'skype', 'imgur']],
+  ['Tech & développement',  ['github', 'gitlab', 'bitbucket', 'adobe', 'atlassian', 'docker', 'wordpress', 'gravatar', 'codepen', 'digitalocean', 'heroku', 'figma', 'replit', 'about.me']],
+  ['Streaming & média',     ['spotify', 'deezer', 'soundcloud', 'lastfm', 'last.fm', 'netflix', 'twitch', 'vimeo', 'youtube', 'crunchyroll', 'mixcloud', 'bandcamp', 'tidal', 'imdb']],
+  ['E-commerce',            ['amazon', 'ebay', 'aliexpress', 'etsy', 'rakuten', 'wish', 'shopify', 'vinted', 'leboncoin', 'cdiscount', 'asos', 'zalando', 'samsclub']],
+  ['Jeux vidéo',            ['steam', 'roblox', 'epicgames', 'ea.com', 'origin', 'minecraft', 'chess.com', 'xbox', 'playstation', 'riotgames', 'ubisoft']],
+  ['Finance & crypto',      ['paypal', 'coinbase', 'revolut', 'binance', 'kraken', 'wise', 'n26', 'venmo', 'cashapp', 'stripe']],
+  ['Voyage & livraison',    ['airbnb', 'booking', 'deliveroo', 'ubereats', 'uber', 'lyft', 'tripadvisor', 'expedia', 'kayak', 'justeat']],
+  ['Productivité',          ['evernote', 'trello', 'notion', 'dropbox', 'microsoft', 'office', 'zoom', 'asana', 'todoist', 'box.com', 'protonmail', 'google', 'mailru']],
+  ['Rencontres',            ['tinder', 'bumble', 'okcupid', 'happn', 'meetic', 'grindr', 'hinge']],
+]
+function categorize(domain) {
+  const d = (domain || '').toLowerCase()
+  for (const [cat, keys] of FOOTPRINT_CATEGORIES) {
+    if (keys.some(k => d.includes(k))) return cat
+  }
+  return 'Autres services'
+}
+const footprintGroups = computed(() => {
+  const sites = results.value?.footprint ?? []
+  const map = {}
+  for (const s of sites) {
+    const c = categorize(s)
+    ;(map[c] ||= []).push(s)
+  }
+  return Object.entries(map)
+    .map(([category, list]) => ({ category, sites: [...list].sort((a, b) => a.localeCompare(b)) }))
+    .sort((a, b) => b.sites.length - a.sites.length || a.category.localeCompare(b.category))
+})
+function siteName(domain) {
+  const base = (domain || '').split('.')[0].replace(/[-_]/g, ' ')
+  return base.charAt(0).toUpperCase() + base.slice(1)
 }
 const scoreColor = computed(() => {
   const s = score.value

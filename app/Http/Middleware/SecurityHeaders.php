@@ -30,7 +30,7 @@ class SecurityHeaders
             "script-src 'self' 'nonce-{$nonce}' https://fonts.bunny.net; " .
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net; " .
             "font-src 'self' https://fonts.bunny.net; " .
-            "img-src 'self' data: https://www.google.com https://*.xposedornot.com; " .
+            "img-src 'self' data: https://www.google.com https://xposedornot.com https://*.xposedornot.com; " .
             "connect-src 'self'; " .
             "frame-ancestors 'none';"
         );
