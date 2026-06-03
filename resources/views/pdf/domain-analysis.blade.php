@@ -144,7 +144,7 @@
 
     <div class="privacy-note">
         Data sourced from: DNS resolver, VirusTotal API, TweetFeed IOC community, crt.sh Certificate Transparency logs.
-        Results cached for 10 minutes. Report valid as of generation date. &copy; {{ date('Y') }} Nealix — onleaked.nealix.org
+        Results cached for 10 minutes. Report valid as of generation date. &copy; {{ date('Y') }} Nealix onleaked.nealix.org
     </div>
 </body>
 </html>

@@ -71,7 +71,7 @@
                     Service 2
                 </div>
                 <h2 class="text-3xl font-bold mb-4">Leak Check & Digital Footprint</h2>
-                <p class="text-zinc-400 leading-relaxed mb-6">Check if your email has been compromised in data breaches and discover your digital presence across 120+ platforms — all without registration or tracking.</p>
+                <p class="text-zinc-400 leading-relaxed mb-6">Check if your email has been compromised in data breaches and discover your digital presence across 120+ platforms all without registration or tracking.</p>
                 <ul class="space-y-3 text-sm text-zinc-300">
                     <li class="flex items-start gap-3"><svg class="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Zero-storage, privacy-first architecture</li>
                     <li class="flex items-start gap-3"><svg class="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>OSINT-powered footprint: see where your email is registered</li>

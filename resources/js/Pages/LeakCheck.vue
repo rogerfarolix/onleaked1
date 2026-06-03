@@ -1,6 +1,6 @@
 <template>
   <PublicLayout title="Vérification de fuite & empreinte numérique">
-    <div class="pt-20 pb-20 px-6">
+    <div class="pt-28 pb-20 px-6">
       <div class="max-w-4xl mx-auto">
 
         <div class="text-center mb-12 fade-up">
@@ -21,7 +21,7 @@
           <div aria-hidden="true" style="position:absolute;left:-9999px;overflow:hidden;height:1px;width:1px">
             <input type="text" v-model="honeypot" autocomplete="off" tabindex="-1">
           </div>
-          <div class="glass-card rounded-2xl p-2 glow-input transition-all duration-300">
+          <div class="glass-card rounded-lg p-2 glow-input transition-all duration-300">
             <form @submit.prevent="checkEmail" class="flex items-center gap-2">
               <div class="flex-1 flex items-center gap-3 px-4">
                 <svg class="w-5 h-5 text-text-dim shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -38,14 +38,14 @@
               </button>
             </form>
           </div>
-          <div v-if="error" class="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">{{ error }}</div>
+          <div v-if="error" class="mt-4 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">{{ error }}</div>
         </div>
 
         <!-- Results -->
         <div v-if="results" class="fade-up" style="animation-delay:.2s">
 
           <!-- Score card -->
-          <div class="glass-card rounded-2xl p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div class="glass-card rounded-lg p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
             <div>
               <p class="text-text-muted text-sm mb-1">Score de sécurité</p>
               <div class="text-4xl font-bold font-mono" :class="scoreColor">
@@ -55,7 +55,7 @@
             </div>
             <div class="flex gap-2">
               <button @click="downloadCsv" :disabled="csvLoading"
-                class="px-4 py-2 bg-white/5 border border-line text-text font-semibold rounded-xl hover:bg-white/10 transition-all text-sm flex items-center gap-2 disabled:opacity-50">
+                class="px-4 py-2 bg-white/5 border border-line text-text font-semibold rounded-lg hover:bg-white/10 transition-all text-sm flex items-center gap-2 disabled:opacity-50">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 {{ csvLoading ? '…' : 'CSV' }}
               </button>
@@ -98,7 +98,7 @@
                 </div>
               </div>
               <div class="space-y-3">
-                <div v-for="(b, i) in paginatedBreaches" :key="i" class="glass-card rounded-xl p-5">
+                <div v-for="(b, i) in paginatedBreaches" :key="i" class="glass-card rounded-lg p-5">
                   <div class="flex items-start gap-4">
                     <img v-if="b.logo" :src="b.logo" :alt="b.source" class="w-10 h-10 rounded-lg object-contain bg-white/5 p-1 shrink-0" @error="$event.target.style.display='none'">
                     <div v-else class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 text-red-400 font-bold text-sm">{{ b.source?.charAt(0) }}</div>
@@ -151,7 +151,7 @@
               </div>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 <div v-for="(site, i) in results.footprint" :key="i"
-                  class="glass-card rounded-xl p-4 flex items-center gap-3 hover:border-brand/20 transition-all">
+                  class="glass-card rounded-lg p-4 flex items-center gap-3 hover:border-brand/20 transition-all">
                   <img :src="`https://www.google.com/s2/favicons?sz=32&domain=${site}`" :alt="site" class="w-6 h-6 rounded shrink-0"
                     @error="$event.target.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23872323\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
                   <span class="text-sm text-text truncate">{{ site }}</span>
@@ -206,7 +206,7 @@ const scoreColor = computed(() => {
 })
 const scoreLabel = computed(() => {
   const s = score.value
-  return s >= 80 ? 'Risque faible — aucune menace significative détectée' : s >= 50 ? 'Risque moyen — une certaine exposition détectée' : 'Risque élevé — action immédiate recommandée'
+  return s >= 80 ? 'Risque faible aucune menace significative détectée' : s >= 50 ? 'Risque moyen une certaine exposition détectée' : 'Risque élevé action immédiate recommandée'
 })
 const paginatedBreaches = computed(() => {
   if (!results.value?.breaches) return []

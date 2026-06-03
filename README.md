@@ -1,4 +1,4 @@
-# Onleaked — Cybersecurity Intelligence Platform
+# Onleaked Cybersecurity Intelligence Platform
 
 > Privacy-first cybersecurity SaaS built with Laravel 13, PostgreSQL, Alpine.js and Tailwind CSS.
 
@@ -39,9 +39,9 @@ onleaked/
 │   │   └── SendVulnerabilityAlerts.php   # Artisan command: send CVE alert emails
 │   ├── Http/
 │   │   ├── Controllers/
-│   │   │   ├── LeakCheckController.php       # POST /check-email — breach + footprint
-│   │   │   ├── DomainAnalysisController.php  # POST /analyze-domain — DNS + email config
-│   │   │   ├── UserTechnologyController.php  # POST /technologies — subscription sync
+│   │   │   ├── LeakCheckController.php       # POST /check-email breach + footprint
+│   │   │   ├── DomainAnalysisController.php  # POST /analyze-domain DNS + email config
+│   │   │   ├── UserTechnologyController.php  # POST /technologies subscription sync
 │   │   │   ├── ProfileController.php         # GET|PATCH|DELETE /profile
 │   │   │   └── Auth/                         # Breeze auth controllers (9 files)
 │   │   └── Middleware/
@@ -84,7 +84,7 @@ onleaked/
 users
 ├── id               UUID, PK
 ├── name, email      unique
-├── role             string  — 'user' | 'admin'  (default: 'user')
+├── role             string  'user' | 'admin'  (default: 'user')
 ├── password
 └── email_verified_at, remember_token, timestamps
 
@@ -200,13 +200,13 @@ pip install holehe
 
 ### 5. Run development servers
 ```bash
-# Terminal 1 — Laravel
+# Terminal 1 Laravel
 php artisan serve
 
-# Terminal 2 — Vite (hot reload)
+# Terminal 2 Vite (hot reload)
 npm run dev
 
-# Terminal 3 — Queue worker (email alerts)
+# Terminal 3 Queue worker (email alerts)
 php artisan queue:work
 ```
 
@@ -234,7 +234,7 @@ php artisan route:cache
 php artisan view:cache
 ```
 
-### Queue — Supervisor example
+### Queue Supervisor example
 ```ini
 [program:onleaked-worker]
 command=php /var/www/onleaked/artisan queue:work redis --sleep=3 --tries=3
@@ -243,7 +243,7 @@ autorestart=true
 user=www-data
 ```
 
-### Scheduled commands — crontab
+### Scheduled commands crontab
 ```cron
 * * * * * cd /var/www/onleaked && php artisan schedule:run >> /dev/null 2>&1
 ```
@@ -283,4 +283,4 @@ php artisan tinker                 # Interactive REPL
 
 ## License
 
-Proprietary — © 2025 Nealix. All rights reserved.
+Proprietary © 2025 Nealix. All rights reserved.

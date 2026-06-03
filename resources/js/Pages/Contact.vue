@@ -1,6 +1,6 @@
 <template>
   <PublicLayout title="Contact">
-    <div class="gradient-bg min-h-screen py-16 px-4">
+    <div class="gradient-bg min-h-screen pt-28 pb-16 px-4">
       <div class="max-w-2xl mx-auto">
 
         <!-- Header -->
@@ -10,13 +10,13 @@
             Nous contacter
           </div>
           <h1 class="text-4xl font-bold text-white mb-3">Contactez-nous</h1>
-          <p class="text-text-muted text-lg">Questions, partenariats ou divulgations de sécurité — nous sommes là.</p>
+          <p class="text-text-muted text-lg">Questions, partenariats ou divulgations de sécurité nous sommes là.</p>
         </div>
 
         <!-- Contact card -->
         <div class="glass-card p-10 mb-6">
           <div class="flex items-start gap-5 mb-8">
-            <div class="w-12 h-12 rounded-xl bg-brand/10 flex items-center justify-center shrink-0">
+            <div class="w-12 h-12 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
               <svg class="w-6 h-6 text-brand-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
               </svg>

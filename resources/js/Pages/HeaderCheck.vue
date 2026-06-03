@@ -1,6 +1,6 @@
 <template>
   <PublicLayout title="Analyseur d'en-têtes d'e-mail">
-    <div class="gradient-bg min-h-screen py-16 px-4">
+    <div class="gradient-bg min-h-screen pt-28 pb-16 px-4">
       <div class="max-w-3xl mx-auto">
 
         <!-- Header -->
@@ -46,7 +46,7 @@
         <div v-if="results">
 
           <!-- Summary banner -->
-          <div class="rounded-xl px-5 py-4 mb-6 flex items-center gap-3"
+          <div class="rounded-lg px-5 py-4 mb-6 flex items-center gap-3"
             :class="{
               'bg-emerald-500/10 border border-emerald-500/20': results.authentication?.summary === 'secure',
               'bg-amber-500/10 border border-amber-500/20': results.authentication?.summary === 'partial',

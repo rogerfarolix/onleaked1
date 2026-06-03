@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'IP Reputation Check — Onleaked')
+@section('title', 'IP Reputation Check Onleaked')
 
 @section('content')
 <div class="pt-20 pb-20 px-6">
@@ -15,7 +15,7 @@
                 IP Reputation <span class="text-indigo-400">Intelligence</span>
             </h1>
             <p class="text-zinc-400 text-lg max-w-2xl mx-auto">
-                Analyze any IP address — geolocation, ISP, ASN, and abuse confidence score from global threat intelligence feeds.
+                Analyze any IP address geolocation, ISP, ASN, and abuse confidence score from global threat intelligence feeds.
             </p>
         </div>
 

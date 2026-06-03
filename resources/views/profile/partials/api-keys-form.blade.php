@@ -23,7 +23,7 @@
         <!-- One-time key display -->
         <template x-if="newKeyValue">
             <div class="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
-                <p class="text-sm text-emerald-400 font-semibold mb-2">Key generated — copy it now, it won't be shown again!</p>
+                <p class="text-sm text-emerald-400 font-semibold mb-2">Key generated copy it now, it won't be shown again!</p>
                 <div class="flex items-center gap-2">
                     <code class="flex-1 text-xs font-mono text-zinc-300 bg-black/30 px-3 py-2 rounded-lg break-all" x-text="newKeyValue"></code>
                     <button @click="copyKey()" class="shrink-0 text-xs px-3 py-2 rounded-lg bg-white/10 text-zinc-300 hover:bg-white/20 transition-colors" x-text="copied ? 'Copied!' : 'Copy'"></button>

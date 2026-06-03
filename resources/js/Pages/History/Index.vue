@@ -11,13 +11,13 @@
           <Link :href="route('dashboard')" class="text-sm text-text-dim hover:text-white transition-colors">&larr; Tableau de bord</Link>
         </div>
 
-        <div v-if="!history.data?.length" class="glass-card rounded-2xl p-16 text-center">
+        <div v-if="!history.data?.length" class="glass-card rounded-lg p-16 text-center">
           <svg class="w-10 h-10 text-text-dim mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <p class="text-text-muted font-medium mb-1">Aucun scan pour l'instant</p>
           <p class="text-text-dim text-sm">Utilisez un outil en étant connecté et votre historique apparaîtra ici.</p>
         </div>
 
-        <div v-else class="glass-card rounded-2xl overflow-hidden">
+        <div v-else class="glass-card rounded-lg overflow-hidden">
           <table class="w-full">
             <thead>
               <tr class="border-b border-line">
@@ -66,7 +66,7 @@
       <Transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0" enter-to-class="opacity-100">
         <div v-if="modal.show" class="fixed inset-0 z-50 flex items-center justify-center p-4" @keydown.escape="modal.show = false">
           <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="modal.show = false"></div>
-          <div class="relative max-w-2xl w-full max-h-[80vh] overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-2xl">
+          <div class="relative max-w-2xl w-full max-h-[80vh] overflow-y-auto rounded-lg border border-line bg-surface p-6 shadow-2xl">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-semibold text-white text-sm">Détails du scan</h3>
               <button @click="modal.show = false" class="text-text-dim hover:text-white transition-colors">
@@ -76,7 +76,7 @@
             <div v-if="modal.loading" class="flex justify-center py-8">
               <svg class="w-5 h-5 animate-spin text-text-dim" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
             </div>
-            <pre v-else-if="modal.data" class="text-xs text-text-muted overflow-x-auto font-mono bg-black/30 rounded-xl p-4 whitespace-pre-wrap">{{ JSON.stringify(modal.data.results, null, 2) }}</pre>
+            <pre v-else-if="modal.data" class="text-xs text-text-muted overflow-x-auto font-mono bg-black/30 rounded-lg p-4 whitespace-pre-wrap">{{ JSON.stringify(modal.data.results, null, 2) }}</pre>
           </div>
         </div>
       </Transition>

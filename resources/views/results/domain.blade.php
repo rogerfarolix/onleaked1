@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Domain Report: ' . $domain . ' — Onleaked')
+@section('title', 'Domain Report: ' . $domain . ' Onleaked')
 
 @section('content')
 <div class="pt-28 pb-20 px-6">

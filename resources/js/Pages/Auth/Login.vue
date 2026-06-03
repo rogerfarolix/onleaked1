@@ -16,7 +16,7 @@
         </div>
 
         <!-- Flash status (e.g. password reset success) -->
-        <div v-if="status" class="mb-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">
+        <div v-if="status" class="mb-4 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">
           {{ status }}
         </div>
 

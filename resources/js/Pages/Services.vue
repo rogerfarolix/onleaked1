@@ -1,6 +1,6 @@
 <template>
   <PublicLayout title="Services">
-    <div class="gradient-bg min-h-screen py-16 px-4">
+    <div class="gradient-bg min-h-screen pt-28 pb-16 px-4">
       <div class="max-w-6xl mx-auto">
 
         <!-- Header -->
@@ -10,7 +10,7 @@
             Outils de cybersécurité
           </div>
           <h1 class="text-4xl font-bold text-white mb-4">Suite de renseignement de sécurité</h1>
-          <p class="text-text-muted text-lg max-w-2xl mx-auto">Des outils de cybersécurité de niveau professionnel pour investiguer domaines, IP, en-têtes d'e-mails, certificats SSL et fuites de données — sur une seule plateforme.</p>
+          <p class="text-text-muted text-lg max-w-2xl mx-auto">Des outils de cybersécurité de niveau professionnel pour investiguer domaines, IP, en-têtes d'e-mails, certificats SSL et fuites de données sur une seule plateforme.</p>
         </div>
 
         <!-- Tools grid -->
@@ -45,7 +45,7 @@
           <ToolCard
             href="/password-check"
             name="Mot de passe compromis"
-            desc="Vérifiez si un mot de passe figure dans des jeux de données de fuites publics. Recherche par k-anonymat — votre mot de passe ne quitte jamais votre navigateur en entier."
+            desc="Vérifiez si un mot de passe figure dans des jeux de données de fuites publics. Recherche par k-anonymat votre mot de passe ne quitte jamais votre navigateur en entier."
             cta="Vérifier un mot de passe"
           >
             <template #icon>
@@ -104,7 +104,7 @@
           </div>
           <h2 class="text-2xl font-bold text-white mb-3">Alertes de vulnérabilités CVE</h2>
           <p class="text-text-muted text-base leading-relaxed max-w-xl mx-auto mb-8">
-            Abonnez-vous pour recevoir des alertes CVE en temps réel sur les technologies qui comptent pour vous — frameworks, CMS, bibliothèques et plus encore. Soyez notifié par e-mail dès qu'une vulnérabilité critique est divulguée.
+            Abonnez-vous pour recevoir des alertes CVE en temps réel sur les technologies qui comptent pour vous frameworks, CMS, bibliothèques et plus encore. Soyez notifié par e-mail dès qu'une vulnérabilité critique est divulguée.
           </p>
           <div class="flex flex-wrap items-center justify-center gap-6 mb-8">
             <div v-for="feat in cveFeatures" :key="feat" class="flex items-center gap-2 text-sm text-text-muted">

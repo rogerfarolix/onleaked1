@@ -4,7 +4,7 @@
       <div class="max-w-5xl mx-auto space-y-8">
 
         <!-- Tech subscriptions -->
-        <div class="glass-card rounded-2xl p-6 md:p-8">
+        <div class="glass-card rounded-lg p-6 md:p-8">
           <h2 class="text-xl font-bold text-white mb-1">Alertes de vulnérabilités</h2>
           <p class="text-text-dim text-sm mb-6">Sélectionnez les technologies que vous utilisez. Nous vous enverrons une alerte dès qu'une nouvelle CVE est publiée.</p>
 
@@ -15,7 +15,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
             <label v-for="tech in technologies" :key="tech.id"
-              class="relative flex items-center p-4 rounded-xl border cursor-pointer transition-all duration-200"
+              class="relative flex items-center p-4 rounded-lg border cursor-pointer transition-all duration-200"
               :class="selected.includes(tech.id) ? 'border-brand bg-brand/10' : 'border-line bg-white/5 hover:border-brand/50'">
               <input type="checkbox" :value="tech.id" v-model="selected"
                 class="w-4 h-4 text-brand bg-transparent border-white/20 rounded focus:ring-brand/50">
@@ -38,7 +38,7 @@
         <!-- CVE Activity -->
         <div v-if="cveActivity.length" class="space-y-4">
           <h3 class="text-lg font-bold text-white px-1">Activité CVE récente <span class="text-sm font-normal text-text-dim">(30 derniers jours)</span></h3>
-          <div v-for="item in cveActivity" :key="item.tech.id" class="glass-card rounded-2xl p-6">
+          <div v-for="item in cveActivity" :key="item.tech.id" class="glass-card rounded-lg p-6">
             <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center">
@@ -57,7 +57,7 @@
               </div>
             </div>
             <div class="space-y-2">
-              <div v-for="vuln in item.stats.recent" :key="vuln.id" class="flex items-start gap-3 p-3 rounded-xl bg-white/2 border border-line">
+              <div v-for="vuln in item.stats.recent" :key="vuln.id" class="flex items-start gap-3 p-3 rounded-lg bg-white/2 border border-line">
                 <span class="mt-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold border shrink-0"
                   :class="severityClass(vuln.severity)">{{ (vuln.severity || 'N/A').toUpperCase() }}</span>
                 <div class="flex-1 min-w-0">

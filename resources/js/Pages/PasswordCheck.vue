@@ -1,6 +1,6 @@
 <template>
   <PublicLayout title="Mot de passe compromis">
-    <div class="gradient-bg min-h-screen py-16 px-4">
+    <div class="gradient-bg min-h-screen pt-28 pb-16 px-4">
       <div class="max-w-2xl mx-auto">
 
         <!-- Header -->
@@ -16,7 +16,7 @@
         <!-- Privacy notice -->
         <div class="glass-card p-4 mb-6 flex items-start gap-3 border-brand/20">
           <svg class="w-4 h-4 text-brand-bright mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <p class="text-text-muted text-xs leading-relaxed">Votre mot de passe est haché localement via le k-anonymat — seuls les 5 premiers caractères de l'empreinte SHA-1 sont envoyés. Votre mot de passe réel ne quitte jamais votre navigateur.</p>
+          <p class="text-text-muted text-xs leading-relaxed">Votre mot de passe est haché localement via le k-anonymat seuls les 5 premiers caractères de l'empreinte SHA-1 sont envoyés. Votre mot de passe réel ne quitte jamais votre navigateur.</p>
         </div>
 
         <!-- Form -->

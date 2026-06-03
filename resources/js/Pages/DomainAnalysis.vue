@@ -1,6 +1,6 @@
 <template>
   <PublicLayout title="Analyse de domaine">
-    <div class="gradient-bg min-h-screen py-16 px-4">
+    <div class="gradient-bg min-h-screen pt-28 pb-16 px-4">
       <div class="max-w-4xl mx-auto">
 
         <!-- Header -->

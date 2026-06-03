@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 /* ════════════════════════════════════════════════════════════════
-   Onleaked — Design system
+   Onleaked Design system
    Cybersec dark theme. Single brand accent: oxblood #872323.
    No decorative gradients. Dark only. Functional severity colors
    (red / amber / emerald) are reserved for status, not decoration.
    ════════════════════════════════════════════════════════════════ */
 
 @theme {
-  /* Brand — oxblood */
+  /* Brand oxblood */
   --color-brand: #872323;          /* solid fills, borders, brand marks */
-  --color-brand-bright: #c8403a;   /* legible accent text/links on dark — brighter oxblood sibling */
+  --color-brand-bright: #c8403a;   /* legible accent text/links on dark brighter oxblood sibling */
   --color-brand-dim: #5c1818;      /* deep pressed / quiet borders */
 
-  /* Surfaces — near-black, layered */
+  /* Surfaces near-black, layered */
   --color-ink: #0a0a0b;            /* page background */
   --color-surface: #111113;        /* cards / panels */
   --color-surface-2: #17171a;      /* raised elements, inputs */
@@ -75,7 +75,7 @@
 
 /* ── Shared surfaces ──────────────────────────────────────────────
    These class names are reused across every page. Redefining them
-   here re-skins the whole app — solid panels, no glass/blur, no glow. */
+   here re-skins the whole app solid panels, no glass/blur, no glow. */
 
 .gradient-bg {
   background: var(--color-ink);
@@ -97,7 +97,7 @@
           mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
 }
 
-/* Inputs — clean oxblood focus, no glow */
+/* Inputs clean oxblood focus, no glow */
 .glow-input:focus-within {
   border-color: var(--color-brand) !important;
   box-shadow: 0 0 0 1px var(--color-brand);
@@ -110,7 +110,7 @@ input::placeholder, textarea::placeholder {
   color: var(--color-text-dim);
 }
 
-/* Mono label — the technical "tag" used for section eyebrows */
+/* Mono label the technical "tag" used for section eyebrows */
 .mono-label {
   font-family: var(--font-mono);
   text-transform: uppercase;

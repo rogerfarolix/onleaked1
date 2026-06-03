@@ -46,7 +46,7 @@ class PasswordCheckController extends Controller
                 $riskColor = 'orange';
             } else {
                 $risk = 'high';
-                $riskLabel = 'Extremely common — change immediately';
+                $riskLabel = 'Extremely common change immediately';
                 $riskColor = 'red';
             }
 

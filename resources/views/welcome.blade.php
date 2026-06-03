@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Onleaked — Plateforme de renseignement cybersécurité')
+@section('title', 'Onleaked Plateforme de renseignement cybersécurité')
 
 @section('content')
     <!-- Hero -->
@@ -18,7 +18,7 @@
             </h1>
 
             <p class="text-text-muted text-lg md:text-xl mb-12 max-w-2xl mx-auto fade-up" style="animation-delay:.2s">
-                Surveillez les fuites, auditez vos domaines et suivez les vulnérabilités — sur une seule plateforme. Nous ne stockons jamais vos données.
+                Surveillez les fuites, auditez vos domaines et suivez les vulnérabilités sur une seule plateforme. Nous ne stockons jamais vos données.
             </p>
 
             <div class="flex flex-wrap items-center justify-center gap-3 fade-up" style="animation-delay:.3s">
@@ -98,7 +98,7 @@
                         ['leak-check', 'Vérification de fuite', 'Vérifiez si votre e-mail a été exposé dans une fuite et découvrez votre empreinte numérique sur 120+ plateformes.', 'Vérifier gratuitement', 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'],
                         ['domain.show', 'Analyse de domaine', 'Renseignement complet : DNS, audit SPF/DMARC, énumération de sous-domaines et vérification de réputation.', 'Analyser maintenant', 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9'],
                         ['password-check', 'Mot de passe compromis', 'Vérifiez si un mot de passe a été exposé via le k-anonymat. Votre mot de passe n\'est jamais envoyé en entier.', 'Vérifier un mot de passe', 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'],
-                        ['ssl-check', 'Inspecteur SSL', 'Inspectez le certificat d\'un domaine — émetteur, validité, SAN, jours avant expiration et note de sécurité.', 'Inspecter le SSL', 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
+                        ['ssl-check', 'Inspecteur SSL', 'Inspectez le certificat d\'un domaine émetteur, validité, SAN, jours avant expiration et note de sécurité.', 'Inspecter le SSL', 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
                         ['ip-check', 'Réputation IP', 'Géolocalisation, FAI, recherche ASN et score de confiance d\'abus issu du renseignement mondial sur les menaces.', 'Vérifier une IP', 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3'],
                         ['register', 'Alertes CVE', 'Abonnez-vous à des technologies et recevez des alertes e-mail dès la publication de nouvelles CVE.', 'Commencer gratuitement', 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'],
                     ];

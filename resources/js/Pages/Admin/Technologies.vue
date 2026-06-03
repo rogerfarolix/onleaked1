@@ -11,7 +11,7 @@
         <div v-if="flash?.success" class="p-4 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">{{ flash.success }}</div>
 
         <!-- Add form -->
-        <div class="glass-card rounded-2xl p-6">
+        <div class="glass-card rounded-lg p-6">
           <h3 class="font-semibold text-white mb-4">Ajouter une technologie</h3>
           <form @submit.prevent="addForm.post(route('admin.technologies.store'), { onSuccess: () => addForm.reset() })" class="flex gap-3">
             <input v-model="addForm.name" type="text" placeholder="ex. Apache 2.4" required maxlength="100"
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Table -->
-        <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="glass-card rounded-lg overflow-hidden">
           <div class="px-6 py-4 border-b border-line">
             <h3 class="font-semibold text-white">Toutes les technologies ({{ technologies.total }})</h3>
           </div>

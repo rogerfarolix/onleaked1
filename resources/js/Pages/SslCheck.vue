@@ -1,6 +1,6 @@
 <template>
   <PublicLayout title="Inspecteur SSL">
-    <div class="gradient-bg min-h-screen py-16 px-4">
+    <div class="gradient-bg min-h-screen pt-28 pb-16 px-4">
       <div class="max-w-3xl mx-auto">
 
         <!-- Header -->
@@ -47,7 +47,7 @@
           <!-- Grade + summary row -->
           <div class="flex flex-wrap items-center gap-6 mb-6">
             <!-- Grade badge -->
-            <div class="flex items-center justify-center w-20 h-20 rounded-2xl text-4xl font-black"
+            <div class="flex items-center justify-center w-20 h-20 rounded-lg text-4xl font-black"
               :class="{
                 'bg-emerald-500/20 text-emerald-400': results.ssl?.grade === 'A' || results.ssl?.grade === 'A+',
                 'bg-amber-500/20 text-amber-400': results.ssl?.grade === 'B',
@@ -117,7 +117,7 @@
                   </li>
                   <li v-if="(results.ssl?.days_left ?? 0) <= 30 && (results.ssl?.days_left ?? 0) > 0" class="flex items-start gap-2.5 text-sm text-text-muted">
                     <svg class="w-4 h-4 text-amber-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Le certificat expire dans {{ results.ssl.days_left }} jours — renouvelez-le bientôt.
+                    Le certificat expire dans {{ results.ssl.days_left }} jours renouvelez-le bientôt.
                   </li>
                   <li v-if="(results.ssl?.days_left ?? 0) <= 0" class="flex items-start gap-2.5 text-sm text-text-muted">
                     <svg class="w-4 h-4 text-red-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

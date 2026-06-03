@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Leak Check & Digital Footprint — Onleaked')
+@section('title', 'Leak Check & Digital Footprint Onleaked')
 
 @section('content')
     <section class="pt-32 pb-20 px-6">
@@ -288,7 +288,7 @@
             },
             scoreLabel() {
                 const s = this.computeScore();
-                return s >= 80 ? 'Low Risk — No significant threats detected' : (s >= 50 ? 'Medium Risk — Some exposure found' : 'High Risk — Immediate action recommended');
+                return s >= 80 ? 'Low Risk No significant threats detected' : (s >= 50 ? 'Medium Risk Some exposure found' : 'High Risk Immediate action recommended');
             },
             async downloadPdf() {
                 this.pdfLoading = true;

@@ -30,7 +30,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // HIBP k-anonymity check — password never leaves the server in plaintext
+        // HIBP k-anonymity check password never leaves the server in plaintext
         try {
             $pwned = app(PwnedPasswordsService::class)->countBreaches($request->password);
             if ($pwned > 0) {
@@ -41,7 +41,7 @@ class RegisteredUserController extends Controller
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Exception) {
-            // HIBP API unavailable — allow registration to proceed
+            // HIBP API unavailable allow registration to proceed
         }
 
         $user = User::create([

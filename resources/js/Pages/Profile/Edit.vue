@@ -4,7 +4,7 @@
       <div class="max-w-3xl mx-auto space-y-6">
 
         <!-- Profile info -->
-        <div class="glass-card rounded-2xl p-6 md:p-8">
+        <div class="glass-card rounded-lg p-6 md:p-8">
           <h2 class="text-lg font-semibold text-white mb-1">Informations du profil</h2>
           <p class="text-text-dim text-sm mb-6">Mettez à jour votre nom et votre adresse e-mail.</p>
 
@@ -36,7 +36,7 @@
         </div>
 
         <!-- Password -->
-        <div class="glass-card rounded-2xl p-6 md:p-8">
+        <div class="glass-card rounded-lg p-6 md:p-8">
           <h2 class="text-lg font-semibold text-white mb-1">Modifier le mot de passe</h2>
           <p class="text-text-dim text-sm mb-6">Utilisez un mot de passe long et unique pour rester protégé.</p>
 
@@ -72,7 +72,7 @@
         </div>
 
         <!-- Alert preferences -->
-        <div class="glass-card rounded-2xl p-6 md:p-8">
+        <div class="glass-card rounded-lg p-6 md:p-8">
           <h2 class="text-lg font-semibold text-white mb-1">Préférences d'alertes</h2>
           <p class="text-text-dim text-sm mb-6">À quelle fréquence devons-nous vous envoyer les alertes CVE par e-mail ?</p>
 
@@ -80,7 +80,7 @@
 
           <form @submit.prevent="alertForm.patch('/profile/alerts')" class="space-y-3">
             <label v-for="opt in alertOptions" :key="opt.value"
-              class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors"
+              class="flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors"
               :class="alertForm.alert_frequency === opt.value ? 'border-brand/40 bg-brand/5' : 'border-line hover:border-white/20'">
               <input type="radio" :value="opt.value" v-model="alertForm.alert_frequency" class="mt-0.5 accent-brand">
               <div>
@@ -98,7 +98,7 @@
         </div>
 
         <!-- API Keys -->
-        <div class="glass-card rounded-2xl p-6 md:p-8">
+        <div class="glass-card rounded-lg p-6 md:p-8">
           <h2 class="text-lg font-semibold text-white mb-1">Clés API</h2>
           <p class="text-text-dim text-sm mb-6">Générez des clés pour accéder aux outils Onleaked par programmation.</p>
 
@@ -112,7 +112,7 @@
           </div>
 
           <div v-if="newKeyValue" class="mb-4 p-4 rounded-md border border-emerald-500/20 bg-emerald-500/5">
-            <p class="text-sm text-emerald-400 font-semibold mb-2">Copiez-la maintenant — cette clé ne sera plus affichée !</p>
+            <p class="text-sm text-emerald-400 font-semibold mb-2">Copiez-la maintenant cette clé ne sera plus affichée !</p>
             <div class="flex items-center gap-2">
               <code class="flex-1 text-xs font-mono text-text bg-black/30 px-3 py-2 rounded-md break-all">{{ newKeyValue }}</code>
               <button @click="copyKey" class="text-xs px-3 py-2 rounded-md bg-white/10 text-text hover:bg-white/20 transition-colors shrink-0">
@@ -124,7 +124,7 @@
           <div v-if="loadingKeys" class="text-text-dim text-sm py-4">Chargement…</div>
           <div v-else-if="!keys.length" class="text-text-dim text-sm">Aucune clé API pour l'instant.</div>
           <div v-else class="space-y-2">
-            <div v-for="k in keys" :key="k.id" class="flex items-center justify-between p-4 rounded-xl border border-line bg-white/2">
+            <div v-for="k in keys" :key="k.id" class="flex items-center justify-between p-4 rounded-lg border border-line bg-white/2">
               <div>
                 <p class="text-sm font-medium text-white">{{ k.name }}</p>
                 <p class="text-xs text-text-dim mt-0.5">
@@ -137,7 +137,7 @@
               </button>
             </div>
           </div>
-          <div class="mt-4 p-4 rounded-xl border border-line bg-white/2 text-xs text-text-dim">
+          <div class="mt-4 p-4 rounded-lg border border-line bg-white/2 text-xs text-text-dim">
             <p class="font-mono mb-1">POST /api/v1/check-email</p>
             <p class="font-mono mb-2">POST /api/v1/analyze-domain</p>
             <p>Envoyez <code class="text-text-muted">Authorization: Bearer VOTRE_CLE</code> à chaque requête.</p>
@@ -145,7 +145,7 @@
         </div>
 
         <!-- Delete account -->
-        <div class="glass-card rounded-2xl p-6 md:p-8 border-red-500/20 bg-red-500/5">
+        <div class="glass-card rounded-lg p-6 md:p-8 border-red-500/20 bg-red-500/5">
           <h2 class="text-lg font-semibold text-white mb-1">Supprimer le compte</h2>
           <p class="text-text-dim text-sm mb-4">Supprimez définitivement votre compte et toutes les données associées.</p>
           <button @click="deleteModal = true" class="px-5 py-2.5 bg-red-600/20 border border-red-600/30 text-red-400 font-semibold rounded-md hover:bg-red-600/30 transition-colors text-sm">
@@ -161,7 +161,7 @@
       <Transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0" enter-to-class="opacity-100">
         <div v-if="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="deleteModal = false"></div>
-          <div class="relative max-w-md w-full glass-card rounded-2xl p-6">
+          <div class="relative max-w-md w-full glass-card rounded-lg p-6">
             <h3 class="font-semibold text-white mb-2">Supprimer le compte ?</h3>
             <p class="text-text-dim text-sm mb-4">Cette action est définitive et irréversible.</p>
             <div class="mb-4">

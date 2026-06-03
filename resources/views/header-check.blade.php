@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Email Header Analyzer — Onleaked')
+@section('title', 'Email Header Analyzer Onleaked')
 
 @section('content')
 <div class="pt-20 pb-20 px-6">
@@ -31,7 +31,7 @@
                         class="w-full bg-transparent border-none outline-none text-sm text-zinc-300 placeholder-zinc-600 font-mono focus:ring-0 resize-none"
                         required></textarea>
                     <div class="flex justify-between items-center pt-3 border-t border-white/5">
-                        <p class="text-xs text-zinc-600">Parsed entirely server-side — no external API calls</p>
+                        <p class="text-xs text-zinc-600">Parsed entirely server-side no external API calls</p>
                         <button type="submit" :disabled="loading"
                             class="px-6 py-2.5 bg-white text-black font-semibold rounded-xl hover:bg-zinc-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm">
                             <span x-show="!loading">Analyze</span>
@@ -164,9 +164,9 @@ function headerAnalyzer() {
         },
         summaryDesc() {
             return {
-                secure:     'SPF, DKIM, and DMARC all passed — this email is likely legitimate.',
-                partial:    'Some authentication checks could not be determined — treat with caution.',
-                suspicious: 'One or more authentication checks failed — this email may be spoofed.',
+                secure:     'SPF, DKIM, and DMARC all passed this email is likely legitimate.',
+                partial:    'Some authentication checks could not be determined treat with caution.',
+                suspicious: 'One or more authentication checks failed this email may be spoofed.',
             }[this.results?.authentication?.summary] ?? '';
         },
         authMethods() {

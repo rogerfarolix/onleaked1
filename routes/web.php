@@ -38,7 +38,7 @@ Route::post('/analyze-header', [\App\Http\Controllers\EmailHeaderController::cla
 Route::post('/csv/leak-check', [\App\Http\Controllers\CsvController::class, 'leakCheck'])->name('csv.leak-check')->middleware('throttle:10,1');
 Route::post('/csv/domain', [\App\Http\Controllers\CsvController::class, 'domainAnalysis'])->name('csv.domain')->middleware('throttle:10,1');
 
-// PDF Downloads (no auth required — results data is POSTed client-side)
+// PDF Downloads (no auth required results data is POSTed client-side)
 Route::post('/pdf/leak-check', [\App\Http\Controllers\PdfController::class, 'leakCheck'])->name('pdf.leak-check')->middleware('throttle:10,1');
 Route::post('/pdf/domain', [\App\Http\Controllers\PdfController::class, 'domainAnalysis'])->name('pdf.domain')->middleware('throttle:10,1');
 Route::post('/pdf/password-check', [\App\Http\Controllers\PdfController::class, 'passwordCheck'])->name('pdf.password-check')->middleware('throttle:10,1');

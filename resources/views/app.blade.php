@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800,900|jetbrains-mono:400,500,600&display=swap" rel="stylesheet"/>
-    @routes
+    @routes(nonce: $cspNonce)
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @inertiaHead
 </head>

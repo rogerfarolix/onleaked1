@@ -9,7 +9,7 @@
         </div>
 
         <!-- Filters -->
-        <div class="glass-card rounded-2xl p-5">
+        <div class="glass-card rounded-lg p-5">
           <form @submit.prevent="applyFilters" class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <input v-model="filters.user" type="text" placeholder="Filtrer par e-mail"
               class="bg-white/5 border border-line rounded-md px-4 py-2.5 text-white text-sm placeholder-text-dim focus:outline-none focus:border-brand glow-input">
@@ -25,7 +25,7 @@
         </div>
 
         <!-- Table -->
-        <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="glass-card rounded-lg overflow-hidden">
           <div class="px-6 py-4 border-b border-line flex items-center justify-between">
             <h3 class="font-semibold text-white">{{ logs.total }} entrée(s)</h3>
             <a :href="exportUrl" class="text-xs px-3 py-1.5 rounded-md bg-white/5 border border-line text-text-muted hover:text-white transition-colors">

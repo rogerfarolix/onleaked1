@@ -1,6 +1,6 @@
 <template>
   <PublicLayout title="Réputation IP">
-    <div class="gradient-bg min-h-screen py-16 px-4">
+    <div class="gradient-bg min-h-screen pt-28 pb-16 px-4">
       <div class="max-w-3xl mx-auto">
 
         <!-- Header -->

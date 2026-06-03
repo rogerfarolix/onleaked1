@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Password Breach Check — Onleaked')
+@section('title', 'Password Breach Check Onleaked')
 
 @section('content')
 <div class="pt-20 pb-20 px-6">
@@ -9,13 +9,13 @@
         <div class="text-center mb-12 fade-up">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 text-xs mb-6">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                k-Anonymity — password never sent in full
+                k-Anonymity password never sent in full
             </div>
             <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">
                 Has your password been <span class="text-cyan-400">leaked?</span>
             </h1>
             <p class="text-zinc-400 text-lg max-w-2xl mx-auto">
-                Check against billions of known breached passwords. Only the first 5 characters of your password's SHA-1 hash are ever sent — your password never leaves your browser in full.
+                Check against billions of known breached passwords. Only the first 5 characters of your password's SHA-1 hash are ever sent your password never leaves your browser in full.
             </p>
         </div>
 

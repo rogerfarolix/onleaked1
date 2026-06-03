@@ -40,10 +40,10 @@
         <div class="grade-info">
             <h2>{{ $domain }}</h2>
             <p>
-                @if(($ssl['grade'] ?? 'F') === 'A') Excellent — Certificate is valid and healthy
-                @elseif(($ssl['grade'] ?? 'F') === 'B') Good — Expiring within 30 days
-                @elseif(($ssl['grade'] ?? 'F') === 'C') Warning — Certificate expiring very soon
-                @else Critical — Certificate expired or connection failed
+                @if(($ssl['grade'] ?? 'F') === 'A') Excellent Certificate is valid and healthy
+                @elseif(($ssl['grade'] ?? 'F') === 'B') Good Expiring within 30 days
+                @elseif(($ssl['grade'] ?? 'F') === 'C') Warning Certificate expiring very soon
+                @else Critical Certificate expired or connection failed
                 @endif
             </p>
             @if(isset($ssl['days_left']))

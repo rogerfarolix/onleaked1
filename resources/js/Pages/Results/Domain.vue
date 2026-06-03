@@ -1,6 +1,6 @@
 <template>
-  <PublicLayout :title="`Rapport de domaine — ${domain}`">
-    <div class="pt-20 pb-20 px-6">
+  <PublicLayout :title="`Rapport de domaine ${domain}`">
+    <div class="pt-28 pb-20 px-6">
       <div class="max-w-4xl mx-auto">
         <div class="flex items-center justify-between mb-8">
           <div>
@@ -16,7 +16,7 @@
         <!-- Show domain results inline using same structure as DomainAnalysis.vue -->
         <div v-if="results">
           <!-- Score -->
-          <div class="glass-card rounded-2xl p-5 mb-6">
+          <div class="glass-card rounded-lg p-5 mb-6">
             <p class="text-text-muted text-sm mb-1">Score de sécurité</p>
             <div class="text-4xl font-bold font-mono" :class="score >= 70 ? 'text-emerald-400' : score >= 40 ? 'text-amber-400' : 'text-red-400'">
               {{ score }}<span class="text-xl text-text-dim">/100</span>
@@ -35,7 +35,7 @@
           <!-- DNS -->
           <div v-show="tab === 'dns'">
             <div v-if="results.dns && Object.keys(results.dns).length" class="space-y-4">
-              <div v-for="(records, type) in results.dns" :key="type" class="glass-card rounded-xl p-5">
+              <div v-for="(records, type) in results.dns" :key="type" class="glass-card rounded-lg p-5">
                 <h3 class="text-xs font-semibold uppercase tracking-widest text-text-dim mb-3">{{ type }}</h3>
                 <div class="space-y-1.5">
                   <div v-for="(rec, i) in (Array.isArray(records) ? records : [records])" :key="i"
@@ -49,15 +49,15 @@
 
           <!-- Email Security -->
           <div v-show="tab === 'email'" class="space-y-3">
-            <div class="glass-card rounded-xl p-5 flex items-center justify-between">
+            <div class="glass-card rounded-lg p-5 flex items-center justify-between">
               <span class="text-sm text-white">Enregistrements MX</span>
               <span class="px-2.5 py-1 rounded-lg text-xs font-semibold" :class="results.email_config?.has_mx ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'">{{ results.email_config?.has_mx ? 'Configuré' : 'Absent' }}</span>
             </div>
-            <div class="glass-card rounded-xl p-5 flex items-center justify-between">
+            <div class="glass-card rounded-lg p-5 flex items-center justify-between">
               <span class="text-sm text-white">SPF</span>
               <span class="px-2.5 py-1 rounded-lg text-xs font-semibold" :class="results.email_config?.has_spf ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'">{{ results.email_config?.has_spf ? 'Configuré' : 'Absent' }}</span>
             </div>
-            <div class="glass-card rounded-xl p-5 flex items-center justify-between">
+            <div class="glass-card rounded-lg p-5 flex items-center justify-between">
               <span class="text-sm text-white">DMARC</span>
               <span class="px-2.5 py-1 rounded-lg text-xs font-semibold" :class="results.email_config?.has_dmarc ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'">{{ results.email_config?.has_dmarc ? 'Configuré' : 'Absent' }}</span>
             </div>
@@ -66,16 +66,16 @@
           <!-- Subdomains -->
           <div v-show="tab === 'subdomains'">
             <div v-if="results.subdomains?.length" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div v-for="(sub, i) in results.subdomains" :key="i" class="glass-card rounded-xl px-4 py-2.5 font-mono text-sm text-text truncate">{{ sub }}</div>
+              <div v-for="(sub, i) in results.subdomains" :key="i" class="glass-card rounded-lg px-4 py-2.5 font-mono text-sm text-text truncate">{{ sub }}</div>
             </div>
             <p v-else class="text-text-dim text-sm text-center py-10">Aucun sous-domaine trouvé.</p>
           </div>
 
           <!-- Reputation -->
           <div v-show="tab === 'reputation'">
-            <div class="glass-card rounded-2xl p-6">
+            <div class="glass-card rounded-lg p-6">
               <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                <div class="w-12 h-12 rounded-lg flex items-center justify-center"
                   :class="results.reputation?.status === 'clean' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
                 </div>

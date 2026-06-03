@@ -28,7 +28,7 @@
                         </div>
                         <div>
                             <p class="font-medium text-white">Location</p>
-                            <p class="text-zinc-400">Nealix HQ — Remote-first</p>
+                            <p class="text-zinc-400">Nealix HQ Remote-first</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">

@@ -20,7 +20,7 @@
         </form>
 
         <!-- Table -->
-        <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="glass-card rounded-lg overflow-hidden">
           <div class="px-6 py-4 border-b border-line">
             <h3 class="font-semibold text-white">{{ users.total }} utilisateur(s)</h3>
           </div>

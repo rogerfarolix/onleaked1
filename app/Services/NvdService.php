@@ -75,10 +75,10 @@ class NvdService
     public static function aiRecommendation(string $severity, string $cveId): string
     {
         return match (strtolower($severity)) {
-            'critical' => "CRITICAL — Patch {$cveId} immediately. This vulnerability can be exploited remotely and may lead to full system compromise. Apply the vendor patch now, isolate affected systems if not yet patched, and review access logs.",
-            'high'     => "HIGH — Prioritize patching {$cveId} within 7 days. Restrict access to affected services in the meantime and monitor for exploitation attempts.",
-            'medium'   => "MEDIUM — Schedule patching for {$cveId} within 30 days. Review configurations that might mitigate the risk while the patch is pending.",
-            'low'      => "LOW — Plan to patch {$cveId} in your next maintenance window. Monitor vendor advisories for changes in severity.",
+            'critical' => "CRITICAL Patch {$cveId} immediately. This vulnerability can be exploited remotely and may lead to full system compromise. Apply the vendor patch now, isolate affected systems if not yet patched, and review access logs.",
+            'high'     => "HIGH Prioritize patching {$cveId} within 7 days. Restrict access to affected services in the meantime and monitor for exploitation attempts.",
+            'medium'   => "MEDIUM Schedule patching for {$cveId} within 30 days. Review configurations that might mitigate the risk while the patch is pending.",
+            'low'      => "LOW Plan to patch {$cveId} in your next maintenance window. Monitor vendor advisories for changes in severity.",
             default    => "Review {$cveId} and apply the available patch according to your organization's vulnerability management policy.",
         };
     }
