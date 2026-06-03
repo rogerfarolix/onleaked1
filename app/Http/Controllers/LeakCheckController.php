@@ -49,6 +49,7 @@ class LeakCheckController extends Controller
                 'found'            => count($breaches) > 0,
                 'count'            => count($breaches),
                 'breaches'         => $breaches,
+                'summary'          => $this->buildSummary($breaches),
                 'footprint'        => [],
                 'footprint_job_id' => $jobId,
             ];
@@ -96,21 +97,59 @@ class LeakCheckController extends Controller
 
                     return collect($breachList)->map(function ($breachName) use ($details) {
                         $detail = collect($details)->firstWhere('breachID', $breachName);
+                        $exposed = $detail['exposedData'] ?? [];
+                        $exposed = is_array($exposed) ? array_values($exposed) : [];
 
                         return [
                             'source'          => $breachName,
                             'logo'            => $detail['logo'] ?? null,
-                            'description'     => $detail['breachedData'] ?? 'Your email was found in the ' . $breachName . ' data breach.',
+                            'description'     => $detail['exposureDescription']
+                                ?? ('Votre e-mail a été trouvé dans la fuite de données ' . $breachName . '.'),
                             'date'            => $detail['breachedDate'] ?? null,
-                            'password_leaked' => isset($detail['passwordRisk']) && $detail['passwordRisk'] === 'Yes',
                             'domain'          => $detail['domain'] ?? null,
+                            'industry'        => $detail['industry'] ?? null,
+                            'records'         => isset($detail['exposedRecords']) ? (int) $detail['exposedRecords'] : null,
+                            'exposed_data'    => $exposed,
+                            'password_risk'   => $detail['passwordRisk'] ?? 'unknown',
+                            'verified'        => (bool) ($detail['verified'] ?? false),
+                            'sensitive'       => (bool) ($detail['sensitive'] ?? false),
+                            'reference_url'   => $detail['referenceURL'] ?? null,
+                            'password_leaked' => in_array('Passwords', $exposed, true),
                         ];
-                    })->toArray();
+                    })
+                    ->sortByDesc('records')
+                    ->values()
+                    ->toArray();
                 }
             }
         }
 
         return [];
+    }
+
+    /**
+     * Aggregate stats across all breaches for the summary band.
+     */
+    private function buildSummary(array $breaches): array
+    {
+        $b = collect($breaches);
+
+        $dataTypes = $b->flatMap(fn ($x) => $x['exposed_data'] ?? [])
+            ->countBy()
+            ->sortDesc();
+
+        $dates = $b->pluck('date')->filter()->values();
+
+        return [
+            'total_records'    => (int) $b->sum(fn ($x) => (int) ($x['records'] ?? 0)),
+            'with_passwords'   => $b->where('password_leaked', true)->count(),
+            'data_types'       => $dataTypes->keys()->values()->all(),
+            'data_types_count' => $dataTypes->count(),
+            'verified'         => $b->where('verified', true)->count(),
+            'sensitive'        => $b->where('sensitive', true)->count(),
+            'latest'           => $dates->max(),
+            'earliest'         => $dates->min(),
+        ];
     }
 
     private function getAllBreachDetails(): array

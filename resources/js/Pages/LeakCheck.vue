@@ -88,8 +88,8 @@
           <!-- Breaches tab -->
           <div v-show="tab === 'breaches'">
             <div v-if="results.breaches?.length">
-              <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
                   <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
                 </div>
                 <div>
@@ -97,20 +97,85 @@
                   <p class="text-text-dim text-sm">Trouvé dans <span class="text-red-400 font-bold">{{ results.breaches.length }}</span> fuite(s) de données connue(s)</p>
                 </div>
               </div>
+
+              <!-- Summary stats -->
+              <div v-if="results.summary" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                <div class="glass-card rounded-lg p-4">
+                  <p class="text-2xl font-bold font-mono text-text">{{ results.breaches.length }}</p>
+                  <p class="text-xs text-text-dim mt-0.5">fuites</p>
+                </div>
+                <div class="glass-card rounded-lg p-4">
+                  <p class="text-2xl font-bold font-mono text-text">{{ formatNumber(results.summary.total_records) }}</p>
+                  <p class="text-xs text-text-dim mt-0.5">comptes exposés</p>
+                </div>
+                <div class="glass-card rounded-lg p-4">
+                  <p class="text-2xl font-bold font-mono" :class="results.summary.with_passwords ? 'text-red-400' : 'text-emerald-400'">{{ results.summary.with_passwords }}</p>
+                  <p class="text-xs text-text-dim mt-0.5">avec mot de passe</p>
+                </div>
+                <div class="glass-card rounded-lg p-4">
+                  <p class="text-2xl font-bold font-mono text-text">{{ results.summary.data_types_count }}</p>
+                  <p class="text-xs text-text-dim mt-0.5">types de données</p>
+                </div>
+              </div>
+
+              <!-- Exposed data categories -->
+              <div v-if="results.summary?.data_types?.length" class="glass-card rounded-lg p-4 mb-6">
+                <p class="mono-label text-text-dim mb-3">Données exposées au total</p>
+                <div class="flex flex-wrap gap-2">
+                  <span v-for="d in results.summary.data_types" :key="d"
+                    class="px-2.5 py-1 rounded-full text-xs border"
+                    :class="isSensitiveData(d) ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-white/5 text-text-muted border-line'">
+                    {{ d }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Breach cards -->
               <div class="space-y-3">
                 <div v-for="(b, i) in paginatedBreaches" :key="i" class="glass-card rounded-lg p-5">
                   <div class="flex items-start gap-4">
                     <img v-if="b.logo" :src="b.logo" :alt="b.source" class="w-10 h-10 rounded-lg object-contain bg-white/5 p-1 shrink-0" @error="$event.target.style.display='none'">
                     <div v-else class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 text-red-400 font-bold text-sm">{{ b.source?.charAt(0) }}</div>
                     <div class="flex-1 min-w-0">
-                      <div class="flex items-center justify-between gap-2 mb-1">
-                        <h4 class="font-semibold text-white truncate">{{ b.source }}</h4>
-                        <div class="flex gap-2 shrink-0">
-                          <span v-if="b.password_leaked" class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">Mot de passe exposé</span>
-                          <span v-if="b.date" class="text-xs px-2 py-0.5 rounded-full bg-white/5 text-text-dim border border-line">{{ b.date }}</span>
+                      <!-- Title + badges -->
+                      <div class="flex items-start justify-between gap-2 mb-1.5 flex-wrap">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <h4 class="font-semibold text-white">{{ b.source }}</h4>
+                          <span v-if="b.verified" class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                            Vérifiée
+                          </span>
+                          <span v-if="b.sensitive" class="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Sensible</span>
                         </div>
+                        <span v-if="b.date" class="text-xs text-text-dim shrink-0">{{ formatDate(b.date) }}</span>
                       </div>
-                      <p class="text-text-muted text-sm line-clamp-2">{{ b.description }}</p>
+
+                      <!-- Meta -->
+                      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-dim mb-3">
+                        <span v-if="b.domain" class="font-mono">{{ b.domain }}</span>
+                        <span v-if="b.industry">{{ b.industry }}</span>
+                        <span v-if="b.records" class="text-text-muted"><span class="font-mono">{{ formatNumber(b.records) }}</span> comptes exposés</span>
+                      </div>
+
+                      <!-- Description -->
+                      <p class="text-text-muted text-sm leading-relaxed mb-3">{{ b.description }}</p>
+
+                      <!-- Exposed data + password risk -->
+                      <div class="flex flex-wrap items-center gap-1.5">
+                        <span v-if="pwRisk(b.password_risk)" class="text-[10px] px-1.5 py-0.5 rounded font-semibold" :class="pwRisk(b.password_risk).cls">
+                          {{ pwRisk(b.password_risk).label }}
+                        </span>
+                        <span v-for="d in b.exposed_data" :key="d"
+                          class="text-[11px] px-2 py-0.5 rounded-full border"
+                          :class="isSensitiveData(d) ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-white/5 text-text-dim border-line'">{{ d }}</span>
+                      </div>
+
+                      <!-- Reference -->
+                      <a v-if="b.reference_url" :href="b.reference_url" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1 text-xs text-brand-bright hover:text-white transition-colors mt-3">
+                        En savoir plus
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -200,6 +265,32 @@ const score = computed(() => {
   if (b.some(x => x.password_leaked)) s -= 20
   return Math.max(0, s)
 })
+
+// --- Display helpers for breach details ---
+const numberFmt = new Intl.NumberFormat('fr-FR')
+function formatNumber(n) {
+  if (n === null || n === undefined) return '—'
+  return numberFmt.format(n)
+}
+function formatDate(iso) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (isNaN(d)) return ''
+  return d.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })
+}
+const PW_RISK = {
+  plaintext:   { label: 'Mots de passe en clair',  cls: 'bg-red-500/15 text-red-400' },
+  easytocrack: { label: 'Mots de passe vulnérables', cls: 'bg-red-500/15 text-red-400' },
+  hardtocrack: { label: 'Mots de passe hachés (robustes)', cls: 'bg-amber-500/15 text-amber-400' },
+  hashed:      { label: 'Mots de passe hachés', cls: 'bg-amber-500/15 text-amber-400' },
+}
+function pwRisk(risk) {
+  return PW_RISK[risk] ?? null
+}
+function isSensitiveData(d) {
+  const s = (d || '').toLowerCase()
+  return /password|mot de passe|credit|bancaire|bank|carte|cvv|social security|sécurité sociale|passport|passeport|biometr|biométr|token|jeton|private message|message privé|health|santé|pin/.test(s)
+}
 const scoreColor = computed(() => {
   const s = score.value
   return s >= 80 ? 'text-emerald-400' : s >= 50 ? 'text-amber-400' : 'text-red-400'
