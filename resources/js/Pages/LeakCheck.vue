@@ -1,18 +1,18 @@
 <template>
-  <PublicLayout title="Leak Check & Digital Footprint">
+  <PublicLayout title="Vérification de fuite & empreinte numérique">
     <div class="pt-20 pb-20 px-6">
       <div class="max-w-4xl mx-auto">
 
         <div class="text-center mb-12 fade-up">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-rose-500/20 bg-rose-500/10 text-rose-400 text-xs mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand/25 bg-brand/10 text-brand-bright mb-6">
             <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
-            Privacy-first &bull; Zero tracking &bull; Email never stored
+            <span class="mono-label text-[10px]! text-brand-bright">Sans pistage &bull; E-mail jamais conservé</span>
           </div>
           <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Has your email been <span class="text-rose-400">compromised?</span>
+            Votre e-mail a-t-il été <span class="text-brand-bright">compromis ?</span>
           </h1>
-          <p class="text-zinc-400 text-lg max-w-2xl mx-auto">
-            Check data breaches and discover your full digital footprint across 120+ platforms. We never store, log, or track your data.
+          <p class="text-text-muted text-lg max-w-2xl mx-auto">
+            Vérifiez les fuites de données et découvrez votre empreinte numérique complète sur 120+ plateformes. Nous ne stockons, ne journalisons et ne pistons jamais vos données.
           </p>
         </div>
 
@@ -24,16 +24,16 @@
           <div class="glass-card rounded-2xl p-2 glow-input transition-all duration-300">
             <form @submit.prevent="checkEmail" class="flex items-center gap-2">
               <div class="flex-1 flex items-center gap-3 px-4">
-                <svg class="w-5 h-5 text-zinc-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <input v-model="email" type="email" placeholder="Enter your email address…"
-                  class="w-full bg-transparent border-none outline-none text-white placeholder-zinc-500 py-3 text-base focus:ring-0" required>
+                <svg class="w-5 h-5 text-text-dim shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <input v-model="email" type="email" placeholder="Saisissez votre adresse e-mail…"
+                  class="w-full bg-transparent border-none outline-none text-white placeholder-text-dim py-3 text-base focus:ring-0" required>
               </div>
               <button type="submit" :disabled="loading"
-                class="px-6 py-3 bg-white text-black font-semibold rounded-xl hover:bg-zinc-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed shrink-0 text-sm">
-                <span v-if="!loading">Check Now</span>
+                class="px-6 py-3 bg-brand text-white font-semibold rounded-md hover:bg-brand-bright transition-colors ring-1 ring-brand/40 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 text-sm">
+                <span v-if="!loading">Vérifier</span>
                 <span v-else class="flex items-center gap-2">
                   <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                  Scanning…
+                  Analyse…
                 </span>
               </button>
             </form>
@@ -47,41 +47,41 @@
           <!-- Score card -->
           <div class="glass-card rounded-2xl p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p class="text-zinc-400 text-sm mb-1">Security Score</p>
-              <div class="text-4xl font-bold" :class="scoreColor">
-                {{ score }}<span class="text-xl text-zinc-500">/100</span>
+              <p class="text-text-muted text-sm mb-1">Score de sécurité</p>
+              <div class="text-4xl font-bold font-mono" :class="scoreColor">
+                {{ score }}<span class="text-xl text-text-dim">/100</span>
               </div>
-              <p class="text-sm mt-1 text-zinc-500">{{ scoreLabel }}</p>
+              <p class="text-sm mt-1 text-text-dim">{{ scoreLabel }}</p>
             </div>
             <div class="flex gap-2">
               <button @click="downloadCsv" :disabled="csvLoading"
-                class="px-4 py-2 bg-white/5 border border-white/10 text-zinc-300 font-semibold rounded-xl hover:bg-white/10 transition-all text-sm flex items-center gap-2 disabled:opacity-50">
+                class="px-4 py-2 bg-white/5 border border-line text-text font-semibold rounded-xl hover:bg-white/10 transition-all text-sm flex items-center gap-2 disabled:opacity-50">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 {{ csvLoading ? '…' : 'CSV' }}
               </button>
               <button @click="downloadPdf" :disabled="pdfLoading"
-                class="px-4 py-2 bg-violet-500 text-white font-semibold rounded-xl hover:bg-violet-400 transition-all text-sm flex items-center gap-2 disabled:opacity-50">
+                class="px-4 py-2 bg-brand text-white font-semibold rounded-md hover:bg-brand-bright transition-colors ring-1 ring-brand/40 text-sm flex items-center gap-2 disabled:opacity-50">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                {{ pdfLoading ? 'Generating…' : 'Download PDF' }}
+                {{ pdfLoading ? 'Génération…' : 'Télécharger le PDF' }}
               </button>
             </div>
           </div>
 
           <!-- Tabs -->
-          <div class="flex border-b border-white/10 mb-6">
+          <div class="flex border-b border-line mb-6">
             <button @click="tab = 'breaches'"
               class="px-6 py-3 border-b-2 font-medium text-sm transition-colors flex items-center gap-2"
-              :class="tab === 'breaches' ? 'border-rose-400 text-rose-400' : 'border-transparent text-zinc-400 hover:text-white'">
+              :class="tab === 'breaches' ? 'border-brand-bright text-brand-bright' : 'border-transparent text-text-muted hover:text-white'">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-              Data Breaches
+              Fuites de données
               <span v-if="results.breaches?.length" class="px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-400 text-xs">{{ results.breaches.length }}</span>
             </button>
             <button @click="tab = 'footprint'"
               class="px-6 py-3 border-b-2 font-medium text-sm transition-colors flex items-center gap-2"
-              :class="tab === 'footprint' ? 'border-violet-400 text-violet-400' : 'border-transparent text-zinc-400 hover:text-white'">
+              :class="tab === 'footprint' ? 'border-brand-bright text-brand-bright' : 'border-transparent text-text-muted hover:text-white'">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
-              Digital Footprint
-              <span v-if="results.footprint?.length" class="px-1.5 py-0.5 rounded-full bg-violet-500/20 text-violet-400 text-xs">{{ results.footprint?.length }}</span>
+              Empreinte numérique
+              <span v-if="results.footprint?.length" class="px-1.5 py-0.5 rounded-full bg-brand/20 text-brand-bright text-xs">{{ results.footprint?.length }}</span>
             </button>
           </div>
 
@@ -93,8 +93,8 @@
                   <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
                 </div>
                 <div>
-                  <p class="font-semibold text-red-400">Email Compromised</p>
-                  <p class="text-zinc-500 text-sm">Found in <span class="text-red-400 font-bold">{{ results.breaches.length }}</span> known data breach(es)</p>
+                  <p class="font-semibold text-red-400">E-mail compromis</p>
+                  <p class="text-text-dim text-sm">Trouvé dans <span class="text-red-400 font-bold">{{ results.breaches.length }}</span> fuite(s) de données connue(s)</p>
                 </div>
               </div>
               <div class="space-y-3">
@@ -106,64 +106,64 @@
                       <div class="flex items-center justify-between gap-2 mb-1">
                         <h4 class="font-semibold text-white truncate">{{ b.source }}</h4>
                         <div class="flex gap-2 shrink-0">
-                          <span v-if="b.password_leaked" class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">Password exposed</span>
-                          <span v-if="b.date" class="text-xs px-2 py-0.5 rounded-full bg-white/5 text-zinc-500 border border-white/10">{{ b.date }}</span>
+                          <span v-if="b.password_leaked" class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">Mot de passe exposé</span>
+                          <span v-if="b.date" class="text-xs px-2 py-0.5 rounded-full bg-white/5 text-text-dim border border-line">{{ b.date }}</span>
                         </div>
                       </div>
-                      <p class="text-zinc-400 text-sm line-clamp-2">{{ b.description }}</p>
+                      <p class="text-text-muted text-sm line-clamp-2">{{ b.description }}</p>
                     </div>
                   </div>
                 </div>
               </div>
               <div v-if="totalBreachPages > 1" class="flex items-center justify-center gap-2 mt-6">
-                <button @click="breachPage = Math.max(1, breachPage - 1)" :disabled="breachPage === 1" class="px-3 py-1.5 rounded-lg bg-white/5 text-zinc-400 text-sm disabled:opacity-30 hover:bg-white/10 transition-colors">&larr; Prev</button>
-                <span class="text-zinc-500 text-sm">Page {{ breachPage }} of {{ totalBreachPages }}</span>
-                <button @click="breachPage = Math.min(totalBreachPages, breachPage + 1)" :disabled="breachPage === totalBreachPages" class="px-3 py-1.5 rounded-lg bg-white/5 text-zinc-400 text-sm disabled:opacity-30 hover:bg-white/10 transition-colors">Next &rarr;</button>
+                <button @click="breachPage = Math.max(1, breachPage - 1)" :disabled="breachPage === 1" class="px-3 py-1.5 rounded-md bg-white/5 text-text-muted text-sm disabled:opacity-30 hover:bg-white/10 transition-colors">&larr; Préc.</button>
+                <span class="text-text-dim text-sm">Page {{ breachPage }} sur {{ totalBreachPages }}</span>
+                <button @click="breachPage = Math.min(totalBreachPages, breachPage + 1)" :disabled="breachPage === totalBreachPages" class="px-3 py-1.5 rounded-md bg-white/5 text-text-muted text-sm disabled:opacity-30 hover:bg-white/10 transition-colors">Suiv. &rarr;</button>
               </div>
             </div>
             <div v-else class="flex flex-col items-center gap-3 py-10">
               <div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
                 <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
               </div>
-              <p class="font-semibold text-emerald-400 text-lg">No breaches found</p>
-              <p class="text-zinc-500 text-sm">Your email does not appear in any known data breach.</p>
+              <p class="font-semibold text-emerald-400 text-lg">Aucune fuite trouvée</p>
+              <p class="text-text-dim text-sm">Votre e-mail n'apparaît dans aucune fuite de données connue.</p>
             </div>
           </div>
 
           <!-- Footprint tab -->
           <div v-show="tab === 'footprint'">
             <div v-if="footprintPending" class="flex flex-col items-center gap-4 py-10">
-              <div class="w-16 h-16 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                <svg class="w-8 h-8 text-violet-400 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+              <div class="w-16 h-16 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center">
+                <svg class="w-8 h-8 text-brand-bright animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
               </div>
-              <p class="font-semibold text-violet-400">Scanning 120+ platforms…</p>
-              <p class="text-zinc-500 text-sm">Results will appear automatically, this may take up to 60 seconds.</p>
+              <p class="font-semibold text-brand-bright">Analyse de 120+ plateformes…</p>
+              <p class="text-text-dim text-sm">Les résultats s'afficheront automatiquement, cela peut prendre jusqu'à 60 secondes.</p>
             </div>
             <div v-else-if="results.footprint?.length">
               <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                  <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
+                <div class="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-brand-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
                 </div>
                 <div>
-                  <p class="font-semibold text-violet-400">Digital Footprint</p>
-                  <p class="text-zinc-500 text-sm">This email is registered on <span class="text-violet-400 font-bold">{{ results.footprint.length }}</span> service(s)</p>
+                  <p class="font-semibold text-brand-bright">Empreinte numérique</p>
+                  <p class="text-text-dim text-sm">Cet e-mail est enregistré sur <span class="text-brand-bright font-bold">{{ results.footprint.length }}</span> service(s)</p>
                 </div>
               </div>
               <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 <div v-for="(site, i) in results.footprint" :key="i"
-                  class="glass-card rounded-xl p-4 flex items-center gap-3 hover:border-violet-500/20 transition-all">
+                  class="glass-card rounded-xl p-4 flex items-center gap-3 hover:border-brand/20 transition-all">
                   <img :src="`https://www.google.com/s2/favicons?sz=32&domain=${site}`" :alt="site" class="w-6 h-6 rounded shrink-0"
-                    @error="$event.target.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%238b5cf6\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
-                  <span class="text-sm text-zinc-300 truncate">{{ site }}</span>
+                    @error="$event.target.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23872323\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
+                  <span class="text-sm text-text truncate">{{ site }}</span>
                 </div>
               </div>
             </div>
             <div v-else class="flex flex-col items-center gap-3 py-10">
               <div class="w-16 h-16 rounded-full bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center">
-                <svg class="w-8 h-8 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z M9 12h6"/></svg>
+                <svg class="w-8 h-8 text-text-dim" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z M9 12h6"/></svg>
               </div>
-              <p class="font-semibold text-zinc-400">No associated accounts found</p>
-              <p class="text-zinc-500 text-sm">We checked 120+ platforms and didn't find this email registered.</p>
+              <p class="font-semibold text-text-muted">Aucun compte associé trouvé</p>
+              <p class="text-text-dim text-sm">Nous avons vérifié 120+ plateformes sans trouver cet e-mail enregistré.</p>
             </div>
           </div>
 
@@ -206,7 +206,7 @@ const scoreColor = computed(() => {
 })
 const scoreLabel = computed(() => {
   const s = score.value
-  return s >= 80 ? 'Low Risk — No significant threats detected' : s >= 50 ? 'Medium Risk — Some exposure found' : 'High Risk — Immediate action recommended'
+  return s >= 80 ? 'Risque faible — aucune menace significative détectée' : s >= 50 ? 'Risque moyen — une certaine exposition détectée' : 'Risque élevé — action immédiate recommandée'
 })
 const paginatedBreaches = computed(() => {
   if (!results.value?.breaches) return []
@@ -233,7 +233,7 @@ async function checkEmail() {
       footprintPending.value = true
       pollInterval = setInterval(pollFootprint, 2000)
     }
-  } catch { error.value = 'Connection error. Please try again.' }
+  } catch { error.value = 'Erreur de connexion. Veuillez réessayer.' }
   finally { loading.value = false }
 }
 
@@ -253,15 +253,15 @@ async function pollFootprint() {
 
 async function downloadPdf() {
   pdfLoading.value = true
-  try { await downloadBlob('/pdf/leak-check', { email: email.value, results: results.value }, 'onleaked-breach-report.pdf') }
-  catch { error.value = 'Could not generate PDF.' }
+  try { await downloadBlob('/pdf/leak-check', { email: email.value, results: results.value }, 'onleaked-rapport-fuites.pdf') }
+  catch { error.value = 'Impossible de générer le PDF.' }
   finally { pdfLoading.value = false }
 }
 
 async function downloadCsv() {
   csvLoading.value = true
-  try { await downloadBlob('/csv/leak-check', { email: email.value, results: results.value }, 'onleaked-breach-report.csv') }
-  catch { error.value = 'Could not generate CSV.' }
+  try { await downloadBlob('/csv/leak-check', { email: email.value, results: results.value }, 'onleaked-rapport-fuites.csv') }
+  catch { error.value = 'Impossible de générer le CSV.' }
   finally { csvLoading.value = false }
 }
 </script>

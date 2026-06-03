@@ -4,7 +4,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { ZiggyVue } from 'ziggy-js'
 
 createInertiaApp({
-    title: (title) => title ? `${title} — Onleaked` : 'Onleaked — Cybersecurity Intelligence',
+    title: (title) => title ? `${title} — Onleaked` : 'Onleaked — Renseignement cybersécurité',
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         const ziggy = props.initialPage.props.ziggy ?? {}
@@ -15,7 +15,7 @@ createInertiaApp({
             .mount(el)
     },
     progress: {
-        color: '#8b5cf6',
+        color: '#c8403a',
         showSpinner: false,
     },
 })

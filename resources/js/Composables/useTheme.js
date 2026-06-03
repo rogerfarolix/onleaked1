@@ -1,13 +1,10 @@
 import { ref } from 'vue'
 
-const dark = ref(typeof window !== 'undefined' ? localStorage.getItem('theme') !== 'light' : true)
+// Onleaked is dark-only by design. Kept as a stable export so existing
+// imports don't break, but there is no theme switching.
+const dark = ref(true)
 
 export function useTheme() {
-    const toggle = () => {
-        dark.value = !dark.value
-        localStorage.setItem('theme', dark.value ? 'dark' : 'light')
-        document.documentElement.classList.toggle('dark', dark.value)
-    }
-
+    const toggle = () => {}
     return { dark, toggle }
 }
